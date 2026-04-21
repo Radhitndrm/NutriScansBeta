@@ -259,8 +259,8 @@ nutriscan/
 
 ```bash
 # Clone repositori
-git clone https://github.com/username/nutriscan.git
-cd nutriscan
+git clone https://github.com/Radhitndrm/NutriScanBeta.git
+cd NutriScanBeta
 
 # Install dependencies
 npm install
