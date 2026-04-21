@@ -135,7 +135,7 @@ Target AKG disesuaikan berdasarkan usia anak (0–5 tahun). Nutrien prioritas: p
 ## Roadmap Pengembangan
 
 ```
-Fase 1 (Minggu 1–4)     Fase 2 (Minggu 5–8)     Fase 3 (Minggu 9–12)
+Fase 1 (Minggu 1)     Fase 2 (Minggu 2-3)     Fase 3 (Minggu 4)
 ─────────────────────   ─────────────────────   ──────────────────────
 RegisterScreen update   Rekomendasi makanan     Tips Gizi Harian
 Data AKG Kemenkes       Laporan Mingguan        Artikel Kesehatan
@@ -143,13 +143,13 @@ ProfileScreen AKG       Info Gizi detail        Tambah Manual
 HistoryScreen log       Porsi Manual            Alert Gizi Kurang
 ```
 
-### Fase 1 — Core & Profil *(estimasi: 3–4 minggu)*
+### Fase 1 — Core & Profil *(estimasi: 1 minggu)*
 Fokus pada fondasi: registrasi dengan kategori, data AKG lokal, profil target, dan log histori harian. Setelah fase ini, pengguna bisa melakukan scan dan memantau progress gizi harian.
 
-### Fase 2 — Analisis & Rekomendasi *(estimasi: 3–4 minggu)*
+### Fase 2 — Analisis & Rekomendasi *(estimasi: 2 minggu)*
 Fokus pada analisis gizi: rekomendasi makanan saat gizi kurang, laporan tren mingguan, detail info gizi, dan koreksi porsi manual.
 
-### Fase 3 — Konten & Notifikasi *(estimasi: 3–4 minggu)*
+### Fase 3 — Konten & Notifikasi *(estimasi: 1 minggu)*
 Fokus pada kelengkapan konten dan pengalaman proaktif: tips & artikel edukasi, input manual, dan alert otomatis berbasis data gizi harian.
 
 ---
