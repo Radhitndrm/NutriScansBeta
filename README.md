@@ -31,6 +31,9 @@ NutriScan membantu ibu hamil dan orang tua balita memantau kecukupan gizi harian
 
 ---
 
+## Flow Aplikasi
+![flow aplikasi](flow-app.jpeg)
+
 ## Tech Stack
 
 | Komponen | Teknologi |
