@@ -18,6 +18,7 @@ export async function deteksiMakanan(base64Image) {
   }
 
   // Hilangkan duplikat class (ambil confidence tertinggi per class)
+  console.log("Roboflow class names:", data.predictions.map(p => p.class));
   const unikClass = {};
   data.predictions.forEach((pred) => {
     if (

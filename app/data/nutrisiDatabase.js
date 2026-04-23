@@ -10,7 +10,7 @@ const nutrisiDatabase = {
     lemak: 0.2,
     serat: 0.3,
   },
-  burger: {
+  hamburger: {
     nama: "Burger",
     porsi: "150 gram",
     kalori: 354,
@@ -136,6 +136,15 @@ const nutrisiDatabase = {
     lemak: 0.2,
     serat: 1,
   },
+  pizza: {
+    nama: "Pizza",
+    porsi: "150 gram",
+    kalori: 266,
+    protein: 11,
+    karbohidrat: 33,
+    lemak: 10,
+    serat: 2,
+  },
 };
 
 // Cari nutrisi berdasarkan nama class dari Roboflow
@@ -152,4 +161,13 @@ export function getNutrisi(classNama) {
       serat: 0,
     }
   );
+}
+
+// Rekomendasikan makanan berdasarkan nutrisi yang paling kurang
+export function getRekomendasiMakanan(kurangNutrisi) {
+  if (!kurangNutrisi || kurangNutrisi.length === 0) return [];
+  const utama = kurangNutrisi[0]; // nutrisi paling defisit
+  return Object.values(nutrisiDatabase)
+    .sort((a, b) => b[utama] - a[utama])
+    .slice(0, 4);
 }

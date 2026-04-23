@@ -9,7 +9,23 @@ import {
   ScrollView,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { deteksiMakanan } from "../../utils/geminiHelper";
+
+async function simpanHistory(data) {
+  const raw = await AsyncStorage.getItem("@nutriscan_history");
+  const history = raw ? JSON.parse(raw) : [];
+  const now = new Date();
+  const entry = {
+    id: Date.now().toString(),
+    tanggal: now.toISOString().split("T")[0],
+    waktu: now.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }),
+    makananList: data.makananList,
+    total: data.total,
+  };
+  history.unshift(entry);
+  await AsyncStorage.setItem("@nutriscan_history", JSON.stringify(history));
+}
 
 export default function ScanScreen() {
   const [foto, setFoto] = useState(null);
@@ -61,6 +77,7 @@ export default function ScanScreen() {
       setLoading(true);
       const data = await deteksiMakanan(foto.base64);
       setHasil(data);
+      await simpanHistory(data);
     } catch (error) {
       Alert.alert("Gagal", error.message);
     } finally {
