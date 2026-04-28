@@ -13,6 +13,10 @@ export async function deteksiMakanan(base64Image) {
 
   const data = await response.json();
 
+  if (data.status === 402) {
+    throw new Error("Kredit AI habis. Hubungi pengembang.");
+  }
+
   if (!data.predictions || data.predictions.length === 0) {
     throw new Error("Tidak ada makanan terdeteksi dalam foto");
   }

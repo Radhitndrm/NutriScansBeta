@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --color-smoke: #4a4f42;       /* RGB: 74, 79, 66  */
+  --color-sky-warm: #ccc9be;    /* RGB: 204, 201, 190 */
+}
