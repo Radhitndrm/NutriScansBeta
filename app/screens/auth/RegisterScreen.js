@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView, View, Text, Image } from "react-native";
+import { ScrollView, View, Text, Image, TouchableOpacity } from "react-native";
 import useRegister from "./hooks/useRegister";
 import Step1Form from "./components/Step1Form";
 import Step2Form from "./components/Step2Form";
@@ -15,7 +15,11 @@ export default function RegisterScreen({ navigation }) {
   return (
     <ScrollView
       style={{ flex: 1, backgroundColor: C.skyWarm }}
-      contentContainerStyle={{ paddingHorizontal: 30, paddingTop: 60, paddingBottom: 40 }}
+      contentContainerStyle={{
+        paddingHorizontal: 30,
+        paddingTop: 60,
+        paddingBottom: 40,
+      }}
       keyboardShouldPersistTaps="handled"
     >
       {/* Header: logo + judul — hanya tampil di step 1 */}
@@ -23,15 +27,39 @@ export default function RegisterScreen({ navigation }) {
         <View style={{ alignItems: "center", marginBottom: 36 }}>
           <Image
             source={require("../../../assets/Logo.png")}
-            style={{ width: 160, height: 160 }}
+            style={{ width: 290, height: 290 }}
             resizeMode="contain"
           />
-          <Text style={{ fontSize: 34, fontWeight: "bold", color: C.smoke, letterSpacing: 3, marginTop: 8 }}>
+          <Text
+            style={{
+              fontSize: 34,
+              fontWeight: "bold",
+              color: C.smoke,
+              letterSpacing: 3,
+              marginTop: 8,
+            }}
+          >
             REGISTER
           </Text>
-          <Text style={{ color: C.smoke, opacity: 0.75, fontSize: 13, marginTop: 2 }}>
+          <Text
+            style={{
+              color: C.smoke,
+              opacity: 0.75,
+              fontSize: 13,
+              marginTop: 2,
+            }}
+          >
             To access NutriScan
           </Text>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={{ marginTop: 6 }}
+          >
+            <Text style={{ color: C.smoke, fontSize: 12 }}>
+              Have an account?{" "}
+              <Text style={{ fontWeight: "bold" }}>Login now</Text>
+            </Text>
+          </TouchableOpacity>
         </View>
       )}
 
