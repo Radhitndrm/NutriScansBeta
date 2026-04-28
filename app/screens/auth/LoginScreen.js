@@ -38,7 +38,7 @@ export default function LoginScreen({ navigation }) {
       <View className="items-center mb-6">
         <Image
           source={require("../../../assets/Logo.png")} 
-          className="w-40 h-40"
+          className="w-80 h-80"
           resizeMode="contain"
         />
       </View>
