@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, TextInput, TouchableOpacity, ActivityIndicator } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
 const C = {
   smoke: "#4a4f42",
@@ -10,8 +11,8 @@ const C = {
 };
 
 const KATEGORI = [
-  { id: "ibu_hamil", label: "Ibu Hamil", icon: "🤰" },
-  { id: "balita",    label: "Balita",    icon: "👶" },
+  { id: "ibu_hamil", label: "Ibu Hamil", icon: "heart-circle-outline" },
+  { id: "balita",    label: "Balita",    icon: "happy-outline" },
 ];
 
 const TRIMESTER = [
@@ -67,7 +68,7 @@ export default function Step2Form({
                 borderColor: selected ? C.smoke : "transparent",
               }}
             >
-              <Text style={{ fontSize: 32, marginBottom: 6 }}>{item.icon}</Text>
+              <Ionicons name={item.icon} size={40} color={C.smoke} style={{ marginBottom: 6 }} />
               <Text style={{ fontWeight: "bold", fontSize: 13, color: C.smoke }}>
                 {item.label}
               </Text>
