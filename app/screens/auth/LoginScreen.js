@@ -58,7 +58,7 @@ export default function LoginScreen({ navigation }) {
       />
 
       <TouchableOpacity
-        className="bg-green-600 py-4 rounded-xl items-center mb-4"
+        className="bg-red-600 py-4 rounded-xl items-center mb-4"
         onPress={handleLogin}
         disabled={loading}
       >
