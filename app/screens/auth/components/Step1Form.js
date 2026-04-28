@@ -8,18 +8,35 @@ const C = {
   placeholder: "#8a8880",
 };
 
-function InputRow({ icon, placeholder, value, onChangeText, secureTextEntry, rightIcon, onRightIconPress, keyboardType, autoCapitalize }) {
+function InputRow({
+  icon,
+  placeholder,
+  value,
+  onChangeText,
+  secureTextEntry,
+  rightIcon,
+  onRightIconPress,
+  keyboardType,
+  autoCapitalize,
+}) {
   return (
-    <View style={{
-      backgroundColor: C.inputBg,
-      borderRadius: 30,
-      paddingHorizontal: 18,
-      paddingVertical: 14,
-      marginBottom: 14,
-      flexDirection: "row",
-      alignItems: "center",
-    }}>
-      <Ionicons name={icon} size={18} color={C.smoke} style={{ marginRight: 10, opacity: 0.6 }} />
+    <View
+      style={{
+        backgroundColor: C.inputBg,
+        borderRadius: 30,
+        paddingHorizontal: 18,
+        paddingVertical: 14,
+        marginBottom: 14,
+        flexDirection: "row",
+        alignItems: "center",
+      }}
+    >
+      <Ionicons
+        name={icon}
+        size={18}
+        color={C.smoke}
+        style={{ marginRight: 10, opacity: 0.6 }}
+      />
       <TextInput
         placeholder={placeholder}
         placeholderTextColor={C.placeholder}
@@ -28,18 +45,39 @@ function InputRow({ icon, placeholder, value, onChangeText, secureTextEntry, rig
         secureTextEntry={secureTextEntry}
         keyboardType={keyboardType}
         autoCapitalize={autoCapitalize ?? "none"}
-        style={{ flex: 1, color: C.smoke, fontWeight: "500", fontSize: 13, letterSpacing: 1 }}
+        style={{
+          flex: 1,
+          color: C.smoke,
+          fontWeight: "500",
+          fontSize: 13,
+          letterSpacing: 1,
+        }}
       />
       {rightIcon && (
         <TouchableOpacity onPress={onRightIconPress}>
-          <Ionicons name={rightIcon} size={18} color={C.smoke} style={{ opacity: 0.6 }} />
+          <Ionicons
+            name={rightIcon}
+            size={18}
+            color={C.smoke}
+            style={{ opacity: 0.6 }}
+          />
         </TouchableOpacity>
       )}
     </View>
   );
 }
 
-export default function Step1Form({ username, setUsername, email, setEmail, password, setPassword, konfirmasi, setKonfirmasi, onLanjut, onMasuk }) {
+export default function Step1Form({
+  username,
+  setUsername,
+  email,
+  setEmail,
+  password,
+  setPassword,
+  konfirmasi,
+  setKonfirmasi,
+  onLanjut,
+}) {
   const [showPassword, setShowPassword] = useState(false);
   const [showKonfirmasi, setShowKonfirmasi] = useState(false);
 
@@ -88,14 +126,15 @@ export default function Step1Form({ username, setUsername, email, setEmail, pass
           marginBottom: 16,
         }}
       >
-        <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 15, letterSpacing: 2 }}>
+        <Text
+          style={{
+            color: "#fff",
+            fontWeight: "bold",
+            fontSize: 15,
+            letterSpacing: 2,
+          }}
+        >
           REGISTER
-        </Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity onPress={onMasuk} style={{ alignItems: "center" }}>
-        <Text style={{ color: C.smoke, fontSize: 12 }}>
-          Have an account? <Text style={{ fontWeight: "bold" }}>Login now</Text>
         </Text>
       </TouchableOpacity>
     </View>
