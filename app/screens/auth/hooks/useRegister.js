@@ -3,8 +3,8 @@ import { Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth } from "../../../context/AuthContext";
 
-function validasiStep1(email, password, konfirmasi) {
-  if (!email || !password || !konfirmasi) return "Semua kolom harus diisi";
+function validasiStep1(username, email, password, konfirmasi) {
+  if (!username || !email || !password || !konfirmasi) return "Semua kolom harus diisi";
   if (password !== konfirmasi) return "Password dan konfirmasi tidak sama";
   if (password.length < 6) return "Password minimal 6 karakter";
   return null;
@@ -20,6 +20,7 @@ function validasiStep2(kategori, trimester, namaAnak, usiaBalita) {
 
 export default function useRegister(navigation) {
   const [step, setStep] = useState(1);
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [konfirmasi, setKonfirmasi] = useState("");
@@ -32,7 +33,7 @@ export default function useRegister(navigation) {
   const { register } = useAuth();
 
   function handleLanjut() {
-    const error = validasiStep1(email, password, konfirmasi);
+    const error = validasiStep1(username, email, password, konfirmasi);
     if (error) { Alert.alert("Error", error); return; }
     setStep(2);
   }
@@ -46,13 +47,14 @@ export default function useRegister(navigation) {
       const userCredential = await register(email, password);
       const profil = {
         uid: userCredential.user.uid,
+        username,
         email,
         kategori,
         subKategori: kategori === "ibu_hamil" ? trimester : usiaBalita,
         namaAnak: kategori === "balita" ? namaAnak : null,
       };
       await AsyncStorage.setItem("@nutriscan_profil", JSON.stringify(profil));
-    } catch (error) {
+    } catch {
       Alert.alert("Gagal Daftar", "Email sudah dipakai atau tidak valid");
     } finally {
       setLoading(false);
@@ -61,6 +63,7 @@ export default function useRegister(navigation) {
 
   return {
     step,
+    username, setUsername,
     email, setEmail,
     password, setPassword,
     konfirmasi, setKonfirmasi,
