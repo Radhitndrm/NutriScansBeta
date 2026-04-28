@@ -3,6 +3,13 @@
 @tailwind utilities;
 
 :root {
-  --color-smoke: #4a4f42;       /* RGB: 74, 79, 66  */
-  --color-sky-warm: #ccc9be;    /* RGB: 204, 201, 190 */
+  --color-smoke: #4a4f42;
+  --color-sky-warm: #ccc9be;
+  --font-sans: "Inter_400Regular";
+}
+
+@layer base {
+  * {
+    font-family: "Inter_400Regular";
+  }
 }

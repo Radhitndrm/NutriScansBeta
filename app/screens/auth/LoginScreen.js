@@ -19,18 +19,34 @@ const C = {
   placeholder: "#8a8880",
 };
 
-function InputRow({ icon, placeholder, value, onChangeText, secureTextEntry, rightIcon, onRightIconPress, keyboardType }) {
+function InputRow({
+  icon,
+  placeholder,
+  value,
+  onChangeText,
+  secureTextEntry,
+  rightIcon,
+  onRightIconPress,
+  keyboardType,
+}) {
   return (
-    <View style={{
-      backgroundColor: C.inputBg,
-      borderRadius: 30,
-      paddingHorizontal: 18,
-      paddingVertical: 14,
-      marginBottom: 14,
-      flexDirection: "row",
-      alignItems: "center",
-    }}>
-      <Ionicons name={icon} size={18} color={C.smoke} style={{ marginRight: 10, opacity: 0.6 }} />
+    <View
+      style={{
+        backgroundColor: C.inputBg,
+        borderRadius: 30,
+        paddingHorizontal: 18,
+        paddingVertical: 14,
+        marginBottom: 14,
+        flexDirection: "row",
+        alignItems: "center",
+      }}
+    >
+      <Ionicons
+        name={icon}
+        size={18}
+        color={C.smoke}
+        style={{ marginRight: 10, opacity: 0.6 }}
+      />
       <TextInput
         placeholder={placeholder}
         placeholderTextColor={C.placeholder}
@@ -39,11 +55,22 @@ function InputRow({ icon, placeholder, value, onChangeText, secureTextEntry, rig
         secureTextEntry={secureTextEntry}
         keyboardType={keyboardType}
         autoCapitalize="none"
-        style={{ flex: 1, color: C.smoke, fontWeight: "500", fontSize: 13, letterSpacing: 1 }}
+        style={{
+          flex: 1,
+          color: C.smoke,
+          fontWeight: "500",
+          fontSize: 13,
+          letterSpacing: 1,
+        }}
       />
       {rightIcon && (
         <TouchableOpacity onPress={onRightIconPress}>
-          <Ionicons name={rightIcon} size={18} color={C.smoke} style={{ opacity: 0.6 }} />
+          <Ionicons
+            name={rightIcon}
+            size={18}
+            color={C.smoke}
+            style={{ opacity: 0.6 }}
+          />
         </TouchableOpacity>
       )}
     </View>
@@ -76,24 +103,42 @@ export default function LoginScreen({ navigation }) {
   return (
     <ScrollView
       style={{ flex: 1, backgroundColor: C.skyWarm }}
-      contentContainerStyle={{ paddingHorizontal: 30, paddingTop: 60, paddingBottom: 40 }}
+      contentContainerStyle={{
+        paddingHorizontal: 30,
+        paddingTop: 60,
+        paddingBottom: 40,
+      }}
       keyboardShouldPersistTaps="handled"
     >
       <View style={{ alignItems: "center", marginBottom: 36 }}>
         <Image
           source={require("../../../assets/Logo.png")}
-          style={{ width: 160, height: 160 }}
+          style={{ width: 290, height: 290 }}
           resizeMode="contain"
         />
-        <Text style={{ fontSize: 34, fontWeight: "bold", color: C.smoke, letterSpacing: 3, marginTop: 8 }}>
+        <Text
+          style={{
+            fontSize: 34,
+            fontWeight: "bold",
+            color: C.smoke,
+            letterSpacing: 3,
+            marginTop: 8,
+          }}
+        >
           LOGIN
         </Text>
-        <Text style={{ color: C.smoke, opacity: 0.75, fontSize: 13, marginTop: 2 }}>
+        <Text
+          style={{ color: C.smoke, opacity: 0.75, fontSize: 13, marginTop: 2 }}
+        >
           To access NutriScan
         </Text>
-        <TouchableOpacity onPress={() => navigation.navigate("Register")} style={{ marginTop: 6 }}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("Register")}
+          style={{ marginTop: 6 }}
+        >
           <Text style={{ color: C.smoke, fontSize: 12 }}>
-            Belum punya akun? <Text style={{ fontWeight: "bold" }}>Daftar sekarang</Text>
+            Don't have an account?{" "}
+            <Text style={{ fontWeight: "bold" }}>Register now</Text>
           </Text>
         </TouchableOpacity>
       </View>
@@ -115,8 +160,13 @@ export default function LoginScreen({ navigation }) {
         onRightIconPress={() => setShowPassword(!showPassword)}
       />
 
-      <TouchableOpacity style={{ alignItems: "flex-end", marginBottom: 28 }}>
-        <Text style={{ color: C.smoke, fontSize: 12, opacity: 0.7 }}>FORGET PASSWORD?</Text>
+      <TouchableOpacity
+        onPress={() => navigation.navigate("ForgotPassword")}
+        style={{ alignItems: "flex-end", marginBottom: 28 }}
+      >
+        <Text style={{ color: C.smoke, fontSize: 12, opacity: 0.7 }}>
+          FORGET PASSWORD?
+        </Text>
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -132,7 +182,14 @@ export default function LoginScreen({ navigation }) {
         {loading ? (
           <ActivityIndicator color="#fff" />
         ) : (
-          <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 15, letterSpacing: 2 }}>
+          <Text
+            style={{
+              color: "#fff",
+              fontWeight: "bold",
+              fontSize: 15,
+              letterSpacing: 2,
+            }}
+          >
             LOGIN
           </Text>
         )}
