@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
+  Image,
 } from "react-native";
 import { useAuth } from "../../context/AuthContext";
 
@@ -32,16 +33,32 @@ export default function LoginScreen({ navigation }) {
   }
 
   return (
-    <View className="flex-1 justify-center px-6 bg-gray-50">
-      <Text className="text-4xl font-bold text-green-600 text-center mb-2">
-        🥗 NutriScan
+    <View className="flex-1 justify-center px-6 bg-sky-warm">
+
+      <View className="items-center mb-6">
+        <Image
+          source={require("../../../assets/Logo.png")} 
+          className="w-40 h-40"
+          resizeMode="contain"
+        />
+      </View>
+
+      <Text 
+      className="text-4xl font-bold text-smoke text-center tracking-widest">
+        LOGIN
       </Text>
-      <Text className="text-base text-gray-400 text-center mb-10">
-        Masuk ke akun kamu
+      <Text className="text-base text-smoke-400 text-center mt-2 opacity-70">
+        To access NutriScan
       </Text>
 
+      <TouchableOpacity onPress={() => navigation.navigate("Register")}>
+        <Text className="text-smok text-xs text-center mb-8 opacity-50">
+          Belum punya akun? Daftar
+        </Text>
+      </TouchableOpacity>
+
       <TextInput
-        className="bg-white border border-gray-200 rounded-xl px-4 py-4 text-base mb-4"
+        className="bg-white/70 rounded-full px-5 py-4 mb-4 flex-row items-center"
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
@@ -50,7 +67,7 @@ export default function LoginScreen({ navigation }) {
       />
 
       <TextInput
-        className="bg-white border border-gray-200 rounded-xl px-4 py-4 text-base mb-6"
+        className="bg-white/70 rounded-full px-5 py-4 mb-4 flex-row items-center"
         placeholder="Password"
         value={password}
         onChangeText={setPassword}
@@ -58,22 +75,21 @@ export default function LoginScreen({ navigation }) {
       />
 
       <TouchableOpacity
-        className="bg-red-600 py-4 rounded-xl items-center mb-4"
+        className="bg-smoke py-4 rounded-full items-center mb-4"
         onPress={handleLogin}
         disabled={loading}
       >
         {loading ? (
           <ActivityIndicator color="#fff" />
         ) : (
-          <Text className="text-white text-base font-bold">Masuk</Text>
+          <Text className="text-white font-bold tracking-wide">LOGIN</Text>
         )}
       </TouchableOpacity>
+      
+      <Text className="text-smoke text-center text-xs opacity-70">
+      FORGET PASSWORD?
+      </Text>
 
-      <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-        <Text className="text-green-600 text-center text-sm">
-          Belum punya akun? Daftar
-        </Text>
-      </TouchableOpacity>
     </View>
   );
 }
