@@ -1,19 +1,12 @@
 import { useState } from "react";
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-  ActivityIndicator,
-  Alert,
-  ScrollView,
-  TextInput,
+  View, Text, TouchableOpacity, Image,
+  ActivityIndicator, Alert, ScrollView, TextInput,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { deteksiMakanan } from "../../utils/geminiHelper";
-
 import { C } from "../../theme/colors";
 
 const NUTRISI_FIELDS = [
@@ -55,7 +48,7 @@ function hitungTotal(list) {
   );
 }
 
-/* ── Kartu hasil satu makanan ── */
+/* ── Kartu satu makanan ── */
 function KartuMakanan({ item }) {
   return (
     <View style={{ backgroundColor: C.card, borderRadius: 16, padding: 16, marginBottom: 10 }}>
@@ -64,13 +57,13 @@ function KartuMakanan({ item }) {
           {item.nama}
         </Text>
         {item.confidence != null && (
-          <Text style={{ color: C.smoke, opacity: 0.6, fontSize: 12, fontFamily: "Inter_400Regular" }}>
+          <Text style={{ color: C.smoke, opacity: 0.55, fontSize: 12, fontFamily: "Inter_400Regular" }}>
             {item.confidence}% yakin
           </Text>
         )}
       </View>
       {item.porsi ? (
-        <Text style={{ color: C.smoke, opacity: 0.55, fontSize: 12, marginBottom: 10, fontFamily: "Inter_400Regular" }}>
+        <Text style={{ color: C.smoke, opacity: 0.5, fontSize: 12, marginBottom: 10, fontFamily: "Inter_400Regular" }}>
           per {item.porsi}
         </Text>
       ) : null}
@@ -85,7 +78,7 @@ function KartuMakanan({ item }) {
             <Text style={{ color: C.smoke, fontWeight: "bold", fontSize: 13, fontFamily: "Inter_600SemiBold" }}>
               {typeof val === "number" ? val.toFixed(0) : val ?? "-"}
             </Text>
-            <Text style={{ color: C.smoke, opacity: 0.6, fontSize: 11, fontFamily: "Inter_400Regular" }}>{label}</Text>
+            <Text style={{ color: C.smoke, opacity: 0.55, fontSize: 11, fontFamily: "Inter_400Regular" }}>{label}</Text>
           </View>
         ))}
       </View>
@@ -97,19 +90,19 @@ function KartuMakanan({ item }) {
 function KartuTotal({ total }) {
   return (
     <View style={{ backgroundColor: C.smoke, borderRadius: 16, padding: 18, marginTop: 4 }}>
-      <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 14, marginBottom: 12, fontFamily: "Inter_600SemiBold" }}>
+      <Text style={{ color: C.white, fontWeight: "bold", fontSize: 14, marginBottom: 12, fontFamily: "Inter_600SemiBold" }}>
         Total Nutrisi
       </Text>
       <View style={{ flexDirection: "row", gap: 8 }}>
         {[
-          { val: Math.round(total.kalori),         label: "kkal" },
-          { val: total.protein.toFixed(1) + "g",   label: "protein" },
-          { val: total.karbohidrat.toFixed(1)+"g", label: "karbo" },
-          { val: total.lemak.toFixed(1) + "g",     label: "lemak" },
+          { val: Math.round(total.kalori),          label: "kkal" },
+          { val: total.protein.toFixed(1) + "g",    label: "protein" },
+          { val: total.karbohidrat.toFixed(1) + "g", label: "karbo" },
+          { val: total.lemak.toFixed(1) + "g",      label: "lemak" },
         ].map(({ val, label }) => (
           <View key={label} style={{ flex: 1, backgroundColor: "rgba(255,255,255,0.15)", borderRadius: 10, padding: 8, alignItems: "center" }}>
-            <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 13, fontFamily: "Inter_600SemiBold" }}>{val}</Text>
-            <Text style={{ color: "rgba(255,255,255,0.7)", fontSize: 11, fontFamily: "Inter_400Regular" }}>{label}</Text>
+            <Text style={{ color: C.white, fontWeight: "bold", fontSize: 13, fontFamily: "Inter_600SemiBold" }}>{val}</Text>
+            <Text style={{ color: "rgba(255,255,255,0.65)", fontSize: 11, fontFamily: "Inter_400Regular" }}>{label}</Text>
           </View>
         ))}
       </View>
@@ -117,18 +110,14 @@ function KartuTotal({ total }) {
   );
 }
 
-export default function ScanScreen() {
+/* ══════════════════════════════
+   TAB 1 — SCAN FOTO
+══════════════════════════════ */
+function TabScan() {
   const [foto, setFoto] = useState(null);
   const [hasil, setHasil] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // state input manual
-  const [showManual, setShowManual] = useState(false);
-  const [manualList, setManualList] = useState([]);
-  const [form, setForm] = useState(MANUAL_EMPTY);
-  const [hasilManual, setHasilManual] = useState(null);
-
-  /* ── Kamera & galeri ── */
   async function bukaKamera() {
     const izin = await ImagePicker.requestCameraPermissionsAsync();
     if (!izin.granted) { Alert.alert("Izin Ditolak", "Aplikasi butuh akses kamera"); return; }
@@ -143,7 +132,7 @@ export default function ScanScreen() {
     if (!result.canceled) { setFoto(result.assets[0]); setHasil(null); }
   }
 
-  async function analisisMakanan() {
+  async function analisis() {
     if (!foto) { Alert.alert("Belum ada foto", "Pilih foto makanan terlebih dahulu"); return; }
     try {
       setLoading(true);
@@ -157,85 +146,54 @@ export default function ScanScreen() {
     }
   }
 
-  /* ── Input manual ── */
-  function tambahItemManual() {
-    if (!form.nama) { Alert.alert("Error", "Nama makanan harus diisi"); return; }
-    if (!form.kalori) { Alert.alert("Error", "Kalori harus diisi"); return; }
-    setManualList((prev) => [...prev, { ...form }]);
-    setForm(MANUAL_EMPTY);
-  }
-
-  function hapusItem(index) {
-    setManualList((prev) => prev.filter((_, i) => i !== index));
-  }
-
-  async function simpanManual() {
-    if (manualList.length === 0) { Alert.alert("Kosong", "Tambahkan minimal satu makanan"); return; }
-    const total = hitungTotal(manualList);
-    const data = { makananList: manualList, total };
-    setHasilManual(data);
-    await simpanHistory(data);
-    Alert.alert("Tersimpan", "Data gizi berhasil disimpan ke riwayat");
-    setManualList([]);
-  }
-
   return (
-    <ScrollView
-      style={{ flex: 1, backgroundColor: C.skyWarm }}
-      contentContainerStyle={{ padding: 20 }}
-      keyboardShouldPersistTaps="handled"
-    >
-      {/* ══════════ SEKSI SCAN FOTO ══════════ */}
-      <Text style={{ fontSize: 16, fontWeight: "bold", color: C.smoke, marginBottom: 14, fontFamily: "Inter_700Bold", letterSpacing: 1 }}>
-        SCAN MAKANAN
-      </Text>
-
+    <ScrollView contentContainerStyle={{ padding: 20 }} keyboardShouldPersistTaps="handled">
       {/* Preview foto */}
       {foto ? (
-        <Image source={{ uri: foto.uri }} style={{ width: "100%", height: 200, borderRadius: 16, marginBottom: 12 }} resizeMode="cover" />
+        <Image source={{ uri: foto.uri }} style={{ width: "100%", height: 210, borderRadius: 16, marginBottom: 14 }} resizeMode="cover" />
       ) : (
-        <View style={{ width: "100%", height: 200, backgroundColor: C.card, borderRadius: 16, marginBottom: 12, alignItems: "center", justifyContent: "center" }}>
-          <Ionicons name="fast-food-outline" size={48} color={C.smoke} style={{ opacity: 0.4, marginBottom: 8 }} />
-          <Text style={{ color: C.smoke, opacity: 0.5, fontSize: 13, fontFamily: "Inter_400Regular" }}>Belum ada foto</Text>
+        <View style={{ width: "100%", height: 210, backgroundColor: C.card, borderRadius: 16, marginBottom: 14, alignItems: "center", justifyContent: "center" }}>
+          <Ionicons name="fast-food-outline" size={52} color={C.smoke} style={{ opacity: 0.3, marginBottom: 8 }} />
+          <Text style={{ color: C.smoke, opacity: 0.45, fontSize: 13, fontFamily: "Inter_400Regular" }}>Belum ada foto</Text>
         </View>
       )}
 
-      {/* Tombol kamera & galeri */}
+      {/* Kamera & Galeri */}
       <View style={{ flexDirection: "row", gap: 10, marginBottom: 12 }}>
         <TouchableOpacity
           onPress={bukaKamera}
-          style={{ flex: 1, backgroundColor: C.card, borderRadius: 12, paddingVertical: 12, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6 }}
+          style={{ flex: 1, backgroundColor: C.card, borderRadius: 12, paddingVertical: 13, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6 }}
         >
           <Ionicons name="camera-outline" size={18} color={C.smoke} />
           <Text style={{ color: C.smoke, fontWeight: "bold", fontSize: 13, fontFamily: "Inter_600SemiBold" }}>Kamera</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={bukaGaleri}
-          style={{ flex: 1, backgroundColor: C.card, borderRadius: 12, paddingVertical: 12, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6 }}
+          style={{ flex: 1, backgroundColor: C.card, borderRadius: 12, paddingVertical: 13, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6 }}
         >
           <Ionicons name="image-outline" size={18} color={C.smoke} />
           <Text style={{ color: C.smoke, fontWeight: "bold", fontSize: 13, fontFamily: "Inter_600SemiBold" }}>Galeri</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Tombol analisis */}
+      {/* Tombol Analisis */}
       <TouchableOpacity
-        onPress={analisisMakanan}
+        onPress={analisis}
         disabled={loading || !foto}
-        style={{ backgroundColor: foto ? C.smoke : C.card, borderRadius: 30, paddingVertical: 14, alignItems: "center", marginBottom: 8 }}
+        style={{ backgroundColor: foto ? C.smoke : C.card, borderRadius: 30, paddingVertical: 15, alignItems: "center", marginBottom: 6 }}
       >
         {loading ? (
-          <ActivityIndicator color="#fff" />
+          <ActivityIndicator color={C.white} />
         ) : (
-          <Text style={{ color: foto ? "#fff" : C.placeholder, fontWeight: "bold", fontSize: 14, letterSpacing: 1, fontFamily: "Inter_700Bold" }}>
+          <Text style={{ color: foto ? C.white : C.placeholder, fontWeight: "bold", fontSize: 14, letterSpacing: 1, fontFamily: "Inter_700Bold" }}>
             ANALISIS MAKANAN
           </Text>
         )}
       </TouchableOpacity>
 
-      {/* Hasil scan */}
+      {/* Hasil */}
       {hasil && (
-        <View style={{ marginTop: 16, marginBottom: 8 }}>
+        <View style={{ marginTop: 20 }}>
           <Text style={{ color: C.smoke, fontWeight: "bold", marginBottom: 10, fontFamily: "Inter_600SemiBold" }}>
             Terdeteksi {hasil.makananList.length} makanan
           </Text>
@@ -243,123 +201,182 @@ export default function ScanScreen() {
           <KartuTotal total={hasil.total} />
         </View>
       )}
+    </ScrollView>
+  );
+}
 
-      {/* ══════════ DIVIDER ══════════ */}
-      <View style={{ flexDirection: "row", alignItems: "center", marginVertical: 24 }}>
-        <View style={{ flex: 1, height: 1, backgroundColor: C.cardDark }} />
-        <Text style={{ color: C.smoke, opacity: 0.5, marginHorizontal: 12, fontSize: 12, fontFamily: "Inter_400Regular" }}>
-          atau input manual
+/* ══════════════════════════════
+   TAB 2 — INPUT MANUAL
+══════════════════════════════ */
+function TabManual() {
+  const [manualList, setManualList] = useState([]);
+  const [form, setForm] = useState(MANUAL_EMPTY);
+
+  function tambah() {
+    if (!form.nama) { Alert.alert("Error", "Nama makanan harus diisi"); return; }
+    if (!form.kalori) { Alert.alert("Error", "Kalori harus diisi"); return; }
+    setManualList((prev) => [...prev, { ...form }]);
+    setForm(MANUAL_EMPTY);
+  }
+
+  function hapus(index) {
+    setManualList((prev) => prev.filter((_, i) => i !== index));
+  }
+
+  async function simpan() {
+    if (manualList.length === 0) { Alert.alert("Kosong", "Tambahkan minimal satu makanan"); return; }
+    const total = hitungTotal(manualList);
+    await simpanHistory({ makananList: manualList, total });
+    Alert.alert("Tersimpan", "Data gizi berhasil disimpan ke riwayat");
+    setManualList([]);
+  }
+
+  return (
+    <ScrollView contentContainerStyle={{ padding: 20 }} keyboardShouldPersistTaps="handled">
+
+      {/* Form tambah makanan */}
+      <View style={{ backgroundColor: C.card, borderRadius: 16, padding: 16, marginBottom: 16 }}>
+        <Text style={{ color: C.smoke, fontWeight: "bold", marginBottom: 14, fontFamily: "Inter_600SemiBold" }}>
+          Tambah Makanan
         </Text>
-        <View style={{ flex: 1, height: 1, backgroundColor: C.cardDark }} />
+
+        {/* Nama & Porsi */}
+        <View style={{ flexDirection: "row", gap: 10, marginBottom: 12 }}>
+          <View style={{ flex: 2 }}>
+            <Text style={{ color: C.smoke, fontSize: 11, marginBottom: 4, opacity: 0.65, fontFamily: "Inter_400Regular" }}>Nama Makanan *</Text>
+            <TextInput
+              value={form.nama}
+              onChangeText={(v) => setForm({ ...form, nama: v })}
+              placeholder="cth: Nasi Goreng"
+              placeholderTextColor={C.placeholder}
+              style={{ backgroundColor: C.skyWarm, borderRadius: 10, paddingHorizontal: 12, paddingVertical: 10, color: C.smoke, fontSize: 13, fontFamily: "Inter_400Regular" }}
+            />
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={{ color: C.smoke, fontSize: 11, marginBottom: 4, opacity: 0.65, fontFamily: "Inter_400Regular" }}>Porsi</Text>
+            <TextInput
+              value={form.porsi}
+              onChangeText={(v) => setForm({ ...form, porsi: v })}
+              placeholder="100g"
+              placeholderTextColor={C.placeholder}
+              style={{ backgroundColor: C.skyWarm, borderRadius: 10, paddingHorizontal: 12, paddingVertical: 10, color: C.smoke, fontSize: 13, fontFamily: "Inter_400Regular" }}
+            />
+          </View>
+        </View>
+
+        {/* Nutrisi grid */}
+        <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 10, marginBottom: 16 }}>
+          {NUTRISI_FIELDS.map(({ key, label, satuan }) => (
+            <View key={key} style={{ width: "47%" }}>
+              <Text style={{ color: C.smoke, fontSize: 11, marginBottom: 4, opacity: 0.65, fontFamily: "Inter_400Regular" }}>
+                {label} ({satuan}){key === "kalori" ? " *" : ""}
+              </Text>
+              <TextInput
+                value={form[key]}
+                onChangeText={(v) => setForm({ ...form, [key]: v })}
+                placeholder="0"
+                placeholderTextColor={C.placeholder}
+                keyboardType="decimal-pad"
+                style={{ backgroundColor: C.skyWarm, borderRadius: 10, paddingHorizontal: 12, paddingVertical: 10, color: C.smoke, fontSize: 13, fontFamily: "Inter_400Regular" }}
+              />
+            </View>
+          ))}
+        </View>
+
+        <TouchableOpacity
+          onPress={tambah}
+          style={{ backgroundColor: C.smoke, borderRadius: 12, paddingVertical: 12, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6 }}
+        >
+          <Ionicons name="add-circle-outline" size={18} color={C.white} />
+          <Text style={{ color: C.white, fontWeight: "bold", fontSize: 13, fontFamily: "Inter_600SemiBold" }}>Tambah ke Daftar</Text>
+        </TouchableOpacity>
       </View>
 
-      {/* ══════════ SEKSI INPUT MANUAL ══════════ */}
-      <TouchableOpacity
-        onPress={() => setShowManual(!showManual)}
-        style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: showManual ? 16 : 0 }}
-      >
-        <Text style={{ fontSize: 16, fontWeight: "bold", color: C.smoke, fontFamily: "Inter_700Bold", letterSpacing: 1 }}>
-          INPUT MANUAL
-        </Text>
-        <Ionicons name={showManual ? "chevron-up" : "chevron-down"} size={20} color={C.smoke} />
-      </TouchableOpacity>
-
-      {showManual && (
+      {/* Daftar item yang sudah ditambah */}
+      {manualList.length > 0 && (
         <View>
-          {/* Form input */}
-          <View style={{ backgroundColor: C.card, borderRadius: 16, padding: 16, marginBottom: 14 }}>
-            <Text style={{ color: C.smoke, fontWeight: "bold", marginBottom: 12, fontFamily: "Inter_600SemiBold" }}>
-              Tambah Makanan
-            </Text>
-
-            {/* Nama & Porsi */}
-            <View style={{ flexDirection: "row", gap: 10, marginBottom: 10 }}>
-              <View style={{ flex: 2 }}>
-                <Text style={{ color: C.smoke, fontSize: 11, marginBottom: 4, opacity: 0.7, fontFamily: "Inter_400Regular" }}>Nama Makanan *</Text>
-                <TextInput
-                  value={form.nama}
-                  onChangeText={(v) => setForm({ ...form, nama: v })}
-                  placeholder="cth: Nasi Goreng"
-                  placeholderTextColor={C.placeholder}
-                  style={{ backgroundColor: C.skyWarm, borderRadius: 10, paddingHorizontal: 12, paddingVertical: 10, color: C.smoke, fontSize: 13, fontFamily: "Inter_400Regular" }}
-                />
-              </View>
+          <Text style={{ color: C.smoke, fontWeight: "bold", marginBottom: 10, fontFamily: "Inter_600SemiBold" }}>
+            Daftar ({manualList.length} item)
+          </Text>
+          {manualList.map((item, i) => (
+            <View key={i} style={{ backgroundColor: C.card, borderRadius: 14, padding: 14, marginBottom: 8, flexDirection: "row", alignItems: "center" }}>
               <View style={{ flex: 1 }}>
-                <Text style={{ color: C.smoke, fontSize: 11, marginBottom: 4, opacity: 0.7, fontFamily: "Inter_400Regular" }}>Porsi</Text>
-                <TextInput
-                  value={form.porsi}
-                  onChangeText={(v) => setForm({ ...form, porsi: v })}
-                  placeholder="100g"
-                  placeholderTextColor={C.placeholder}
-                  style={{ backgroundColor: C.skyWarm, borderRadius: 10, paddingHorizontal: 12, paddingVertical: 10, color: C.smoke, fontSize: 13, fontFamily: "Inter_400Regular" }}
-                />
-              </View>
-            </View>
-
-            {/* Nutrisi fields */}
-            <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 10, marginBottom: 14 }}>
-              {NUTRISI_FIELDS.map(({ key, label, satuan }) => (
-                <View key={key} style={{ width: "47%" }}>
-                  <Text style={{ color: C.smoke, fontSize: 11, marginBottom: 4, opacity: 0.7, fontFamily: "Inter_400Regular" }}>
-                    {label} ({satuan}){key === "kalori" ? " *" : ""}
-                  </Text>
-                  <TextInput
-                    value={form[key]}
-                    onChangeText={(v) => setForm({ ...form, [key]: v })}
-                    placeholder="0"
-                    placeholderTextColor={C.placeholder}
-                    keyboardType="decimal-pad"
-                    style={{ backgroundColor: C.skyWarm, borderRadius: 10, paddingHorizontal: 12, paddingVertical: 10, color: C.smoke, fontSize: 13, fontFamily: "Inter_400Regular" }}
-                  />
-                </View>
-              ))}
-            </View>
-
-            <TouchableOpacity
-              onPress={tambahItemManual}
-              style={{ backgroundColor: C.smoke, borderRadius: 12, paddingVertical: 12, alignItems: "center", flexDirection: "row", justifyContent: "center", gap: 6 }}
-            >
-              <Ionicons name="add-circle-outline" size={18} color="#fff" />
-              <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 13, fontFamily: "Inter_600SemiBold" }}>Tambah ke Daftar</Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* Daftar makanan manual */}
-          {manualList.length > 0 && (
-            <View style={{ marginBottom: 14 }}>
-              <Text style={{ color: C.smoke, fontWeight: "bold", marginBottom: 10, fontFamily: "Inter_600SemiBold" }}>
-                Daftar ({manualList.length} item)
-              </Text>
-              {manualList.map((item, i) => (
-                <View key={i} style={{ backgroundColor: C.card, borderRadius: 14, padding: 14, marginBottom: 8, flexDirection: "row", alignItems: "center" }}>
-                  <View style={{ flex: 1 }}>
-                    <Text style={{ color: C.smoke, fontWeight: "bold", fontSize: 14, fontFamily: "Inter_600SemiBold" }}>{item.nama}</Text>
-                    <Text style={{ color: C.smoke, opacity: 0.6, fontSize: 12, marginTop: 2, fontFamily: "Inter_400Regular" }}>
-                      {item.kalori} kkal · {item.protein || 0}g protein · {item.porsi || "-"}
-                    </Text>
-                  </View>
-                  <TouchableOpacity onPress={() => hapusItem(i)} style={{ padding: 4 }}>
-                    <Ionicons name="trash-outline" size={18} color={C.smoke} style={{ opacity: 0.5 }} />
-                  </TouchableOpacity>
-                </View>
-              ))}
-
-              {/* Total manual */}
-              <KartuTotal total={hitungTotal(manualList)} />
-
-              {/* Simpan */}
-              <TouchableOpacity
-                onPress={simpanManual}
-                style={{ backgroundColor: C.smoke, borderRadius: 30, paddingVertical: 14, alignItems: "center", marginTop: 12 }}
-              >
-                <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 14, letterSpacing: 1, fontFamily: "Inter_700Bold" }}>
-                  SIMPAN KE RIWAYAT
+                <Text style={{ color: C.smoke, fontWeight: "bold", fontSize: 14, fontFamily: "Inter_600SemiBold" }}>{item.nama}</Text>
+                <Text style={{ color: C.smoke, opacity: 0.55, fontSize: 12, marginTop: 2, fontFamily: "Inter_400Regular" }}>
+                  {item.kalori} kkal · {item.protein || 0}g protein{item.porsi ? ` · ${item.porsi}` : ""}
                 </Text>
+              </View>
+              <TouchableOpacity onPress={() => hapus(i)} style={{ padding: 4 }}>
+                <Ionicons name="trash-outline" size={18} color={C.smoke} style={{ opacity: 0.45 }} />
               </TouchableOpacity>
             </View>
-          )}
+          ))}
+
+          <KartuTotal total={hitungTotal(manualList)} />
+
+          <TouchableOpacity
+            onPress={simpan}
+            style={{ backgroundColor: C.smoke, borderRadius: 30, paddingVertical: 15, alignItems: "center", marginTop: 14 }}
+          >
+            <Text style={{ color: C.white, fontWeight: "bold", fontSize: 14, letterSpacing: 1, fontFamily: "Inter_700Bold" }}>
+              SIMPAN KE RIWAYAT
+            </Text>
+          </TouchableOpacity>
         </View>
       )}
     </ScrollView>
+  );
+}
+
+/* ══════════════════════════════
+   SCREEN UTAMA dengan Tab Switcher
+══════════════════════════════ */
+const TABS = [
+  { key: "scan",   label: "Scan Foto",     icon: "camera-outline" },
+  { key: "manual", label: "Input Manual",  icon: "create-outline" },
+];
+
+export default function ScanScreen() {
+  const [activeTab, setActiveTab] = useState("scan");
+
+  return (
+    <View style={{ flex: 1, backgroundColor: C.skyWarm }}>
+      {/* Tab Switcher */}
+      <View style={{ flexDirection: "row", margin: 16, backgroundColor: C.card, borderRadius: 14, padding: 4 }}>
+        {TABS.map((tab) => {
+          const active = activeTab === tab.key;
+          return (
+            <TouchableOpacity
+              key={tab.key}
+              onPress={() => setActiveTab(tab.key)}
+              style={{
+                flex: 1,
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 6,
+                paddingVertical: 10,
+                borderRadius: 10,
+                backgroundColor: active ? C.smoke : "transparent",
+              }}
+            >
+              <Ionicons name={tab.icon} size={16} color={active ? C.white : C.smoke} style={{ opacity: active ? 1 : 0.5 }} />
+              <Text style={{
+                color: active ? C.white : C.smoke,
+                opacity: active ? 1 : 0.5,
+                fontWeight: "bold",
+                fontSize: 13,
+                fontFamily: active ? "Inter_600SemiBold" : "Inter_400Regular",
+              }}>
+                {tab.label}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+
+      {/* Konten tab aktif */}
+      {activeTab === "scan" ? <TabScan /> : <TabManual />}
+    </View>
   );
 }
