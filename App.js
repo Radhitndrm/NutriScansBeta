@@ -3,13 +3,14 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
-import { View, ActivityIndicator } from "react-native";
+import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useFonts, Inter_400Regular, Inter_500Medium, Inter_600SemiBold, Inter_700Bold } from "@expo-google-fonts/inter";
 
 import { AuthProvider, useAuth } from "./app/context/AuthContext";
+import { C } from "./app/theme/colors";
 
 // Auth
 import LoginScreen from "./app/screens/auth/LoginScreen";
@@ -33,10 +34,71 @@ const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 const HEADER_OPTS = {
-  headerStyle: { backgroundColor: "#4a4f42" },
-  headerTintColor: "#ccc9be",
-  headerTitleStyle: { fontWeight: "bold" },
+  headerStyle: { backgroundColor: C.smoke },
+  headerTintColor: C.skyWarm,
+  headerTitleStyle: { fontWeight: "bold", fontFamily: "Inter_700Bold" },
 };
+
+const TAB_ROUTES = {
+  Scan:    { active: "camera",     inactive: "camera-outline",    title: "Scan" },
+  History: { active: "time",       inactive: "time-outline",      title: "Riwayat" },
+  Info:    { active: "newspaper",  inactive: "newspaper-outline", title: "Info" },
+  Tips:    { active: "bulb",       inactive: "bulb-outline",      title: "Tips" },
+  Profile: { active: "person",     inactive: "person-outline",    title: "Profil" },
+};
+
+/* ── Custom Tab Bar ── */
+function CustomTabBar({ state, descriptors, navigation }) {
+  const insets = useSafeAreaInsets();
+  return (
+    <View style={{
+      flexDirection: "row",
+      backgroundColor: C.tabBg,
+      paddingTop: 10,
+      paddingBottom: insets.bottom + 8,
+      paddingHorizontal: 6,
+    }}>
+      {state.routes.map((route, index) => {
+        const isFocused = state.index === index;
+        const meta = TAB_ROUTES[route.name] ?? { active: "help", inactive: "help-outline", title: route.name };
+
+        const onPress = () => {
+          const event = navigation.emit({ type: "tabPress", target: route.key, canPreventDefault: true });
+          if (!isFocused && !event.defaultPrevented) navigation.navigate(route.name);
+        };
+
+        return (
+          <TouchableOpacity
+            key={route.key}
+            onPress={onPress}
+            style={{ flex: 1, alignItems: "center" }}
+            activeOpacity={0.7}
+          >
+            <View style={{
+              backgroundColor: isFocused ? C.skyWarm : "transparent",
+              borderRadius: 14,
+              padding: 8,
+              marginBottom: 3,
+            }}>
+              <Ionicons
+                name={isFocused ? meta.active : meta.inactive}
+                size={22}
+                color={isFocused ? C.smoke : "rgba(255,255,255,0.45)"}
+              />
+            </View>
+            <Text style={{
+              color: isFocused ? C.skyWarm : "rgba(255,255,255,0.45)",
+              fontSize: 10,
+              fontFamily: isFocused ? "Inter_600SemiBold" : "Inter_400Regular",
+            }}>
+              {meta.title}
+            </Text>
+          </TouchableOpacity>
+        );
+      })}
+    </View>
+  );
+}
 
 function AuthStack() {
   return (
@@ -69,92 +131,37 @@ function TipsStack() {
 function MainTabs() {
   return (
     <Tab.Navigator
-      screenOptions={{
-        headerShown: false,
-        tabBarActiveTintColor: "#4a4f42",
-        tabBarInactiveTintColor: "#9a9a90",
-        tabBarStyle: { backgroundColor: "#ccc9be", borderTopColor: "#b8bdb2" },
-      }}
+      tabBar={(props) => <CustomTabBar {...props} />}
+      screenOptions={{ headerShown: false }}
     >
-      <Tab.Screen
-        name="Scan"
-        component={ScanScreen}
-        options={{
-          title: "Scan",
-          headerShown: true,
-          ...HEADER_OPTS,
-          headerTitle: "Scan Makanan",
-          tabBarIcon: ({ color, size }) => <Ionicons name="camera-outline" size={size} color={color} />,
-        }}
-      />
-      <Tab.Screen
-        name="History"
-        component={HistoryScreen}
-        options={{
-          title: "Riwayat",
-          headerShown: true,
-          ...HEADER_OPTS,
-          headerTitle: "Riwayat",
-          tabBarIcon: ({ color, size }) => <Ionicons name="time-outline" size={size} color={color} />,
-        }}
-      />
-      <Tab.Screen
-        name="Info"
-        component={InfoStack}
-        options={{
-          title: "Artikel",
-          tabBarIcon: ({ color, size }) => <Ionicons name="newspaper-outline" size={size} color={color} />,
-        }}
-      />
-      <Tab.Screen
-        name="Tips"
-        component={TipsStack}
-        options={{
-          title: "Tips",
-          tabBarIcon: ({ color, size }) => <Ionicons name="bulb-outline" size={size} color={color} />,
-        }}
-      />
-      <Tab.Screen
-        name="Profile"
-        component={ProfileScreen}
-        options={{
-          title: "Profil",
-          headerShown: true,
-          ...HEADER_OPTS,
-          headerTitle: "Profil",
-          tabBarIcon: ({ color, size }) => <Ionicons name="person-outline" size={size} color={color} />,
-        }}
-      />
+      <Tab.Screen name="Scan"    component={ScanScreen}    options={{ headerShown: true, ...HEADER_OPTS, headerTitle: "Scan Makanan" }} />
+      <Tab.Screen name="History" component={HistoryScreen} options={{ headerShown: true, ...HEADER_OPTS, headerTitle: "Riwayat" }} />
+      <Tab.Screen name="Info"    component={InfoStack} />
+      <Tab.Screen name="Tips"    component={TipsStack} />
+      <Tab.Screen name="Profile" component={ProfileScreen} options={{ headerShown: true, ...HEADER_OPTS, headerTitle: "Profil" }} />
     </Tab.Navigator>
   );
 }
 
 function RootNavigator() {
   const { user, loading } = useAuth();
-
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#ccc9be" }}>
-        <ActivityIndicator size="large" color="#4a4f42" />
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: C.skyWarm }}>
+        <ActivityIndicator size="large" color={C.smoke} />
       </View>
     );
   }
-
   return user ? <MainTabs /> : <AuthStack />;
 }
 
 export default function App() {
-  const [fontsLoaded] = useFonts({
-    Inter_400Regular,
-    Inter_500Medium,
-    Inter_600SemiBold,
-    Inter_700Bold,
-  });
+  const [fontsLoaded] = useFonts({ Inter_400Regular, Inter_500Medium, Inter_600SemiBold, Inter_700Bold });
 
   if (!fontsLoaded) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#ccc9be" }}>
-        <ActivityIndicator size="large" color="#4a4f42" />
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: C.skyWarm }}>
+        <ActivityIndicator size="large" color={C.smoke} />
       </View>
     );
   }

@@ -1,4 +1,6 @@
 import { View, Text, ScrollView, ActivityIndicator, TouchableOpacity, Alert } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { C } from "../../theme/colors";
 import useHistory from "./hooks/useHistory";
 
 function formatTanggal(iso) {
@@ -9,16 +11,16 @@ function formatTanggal(iso) {
 
 function TotalHarian({ total }) {
   return (
-    <View className="flex-row gap-2 mt-3">
+    <View style={{ flexDirection: "row", gap: 8, marginTop: 12 }}>
       {[
-        { label: "kkal", val: Math.round(total.kalori) },
+        { label: "kkal",    val: Math.round(total.kalori) },
         { label: "protein", val: `${total.protein.toFixed(1)}g` },
-        { label: "karbo", val: `${total.karbohidrat.toFixed(1)}g` },
-        { label: "lemak", val: `${total.lemak.toFixed(1)}g` },
+        { label: "karbo",   val: `${total.karbohidrat.toFixed(1)}g` },
+        { label: "lemak",   val: `${total.lemak.toFixed(1)}g` },
       ].map((item) => (
-        <View key={item.label} className="flex-1 items-center py-2 rounded-xl bg-white/20">
-          <Text className="font-bold text-sm text-white">{item.val}</Text>
-          <Text className="text-green-100 text-xs">{item.label}</Text>
+        <View key={item.label} style={{ flex: 1, alignItems: "center", paddingVertical: 8, borderRadius: 10, backgroundColor: "rgba(255,255,255,0.15)" }}>
+          <Text style={{ fontWeight: "bold", fontSize: 13, color: C.white, fontFamily: "Inter_600SemiBold" }}>{item.val}</Text>
+          <Text style={{ fontSize: 10, color: "rgba(255,255,255,0.7)", fontFamily: "Inter_400Regular" }}>{item.label}</Text>
         </View>
       ))}
     </View>
@@ -27,35 +29,33 @@ function TotalHarian({ total }) {
 
 function EntryCard({ entry, onHapus }) {
   return (
-    <View className="bg-white rounded-xl p-4 mb-2 border border-gray-100">
-      <View className="flex-row justify-between items-start mb-1">
-        <View className="flex-1 mr-2">
-          <Text className="text-gray-700 font-semibold text-sm" numberOfLines={1}>
+    <View style={{ backgroundColor: C.card, borderRadius: 14, padding: 14, marginBottom: 8 }}>
+      <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
+        <View style={{ flex: 1, marginRight: 8 }}>
+          <Text style={{ color: C.smoke, fontWeight: "600", fontSize: 13, fontFamily: "Inter_600SemiBold" }} numberOfLines={1}>
             {entry.makananList.map((m) => m.nama).join(", ")}
           </Text>
-          <Text className="text-gray-400 text-xs mt-0.5">{entry.waktu}</Text>
+          <Text style={{ color: C.smoke, opacity: 0.55, fontSize: 12, marginTop: 2, fontFamily: "Inter_400Regular" }}>{entry.waktu}</Text>
         </View>
         <TouchableOpacity
-          onPress={() =>
-            Alert.alert("Hapus", "Hapus riwayat ini?", [
-              { text: "Batal", style: "cancel" },
-              { text: "Hapus", style: "destructive", onPress: onHapus },
-            ])
-          }
+          onPress={() => Alert.alert("Hapus", "Hapus riwayat ini?", [
+            { text: "Batal", style: "cancel" },
+            { text: "Hapus", style: "destructive", onPress: onHapus },
+          ])}
         >
-          <Text className="text-red-400 text-xs">Hapus</Text>
+          <Ionicons name="trash-outline" size={16} color={C.smoke} style={{ opacity: 0.5 }} />
         </TouchableOpacity>
       </View>
-      <View className="flex-row gap-2 mt-2">
-        <Text className="bg-orange-50 text-orange-500 text-xs px-2 py-1 rounded-lg">
-          {Math.round(entry.total.kalori)} kkal
-        </Text>
-        <Text className="bg-blue-50 text-blue-500 text-xs px-2 py-1 rounded-lg">
-          {entry.total.protein.toFixed(1)}g protein
-        </Text>
-        <Text className="bg-yellow-50 text-yellow-600 text-xs px-2 py-1 rounded-lg">
-          {entry.total.karbohidrat.toFixed(1)}g karbo
-        </Text>
+      <View style={{ flexDirection: "row", gap: 6 }}>
+        {[
+          { label: `${Math.round(entry.total.kalori)} kkal` },
+          { label: `${entry.total.protein.toFixed(1)}g protein` },
+          { label: `${entry.total.karbohidrat.toFixed(1)}g karbo` },
+        ].map(({ label }) => (
+          <View key={label} style={{ backgroundColor: C.cardDark, borderRadius: 8, paddingHorizontal: 8, paddingVertical: 4 }}>
+            <Text style={{ color: C.smoke, fontSize: 11, fontFamily: "Inter_400Regular" }}>{label}</Text>
+          </View>
+        ))}
       </View>
     </View>
   );
@@ -66,51 +66,47 @@ export default function HistoryScreen() {
 
   if (loading) {
     return (
-      <View className="flex-1 justify-center items-center bg-gray-50">
-        <ActivityIndicator size="large" color="#16a34a" />
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: C.skyWarm }}>
+        <ActivityIndicator size="large" color={C.smoke} />
       </View>
     );
   }
 
   return (
-    <ScrollView className="flex-1 bg-gray-50 px-6 py-6">
-      <View className="flex-row justify-between items-center mb-6">
+    <ScrollView style={{ flex: 1, backgroundColor: C.skyWarm }} contentContainerStyle={{ padding: 20 }}>
+      <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
         <View>
-          <Text className="text-gray-800 font-bold text-xl">Riwayat Scan</Text>
-          <Text className="text-gray-400 text-sm">Histori nutrisi harianmu</Text>
+          <Text style={{ color: C.smoke, fontWeight: "bold", fontSize: 20, fontFamily: "Inter_700Bold" }}>Riwayat</Text>
+          <Text style={{ color: C.smoke, opacity: 0.6, fontSize: 13, fontFamily: "Inter_400Regular" }}>Histori nutrisi harianmu</Text>
         </View>
-        <TouchableOpacity onPress={refresh}>
-          <Text className="text-green-600 text-sm font-semibold">Refresh</Text>
+        <TouchableOpacity onPress={refresh} style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
+          <Ionicons name="refresh-outline" size={16} color={C.smoke} />
+          <Text style={{ color: C.smoke, fontSize: 13, fontFamily: "Inter_500Medium" }}>Refresh</Text>
         </TouchableOpacity>
       </View>
 
       {groupedList.length === 0 ? (
-        <View className="items-center mt-20">
-          <Text className="text-5xl mb-4">📋</Text>
-          <Text className="text-gray-500 font-semibold">Belum ada riwayat</Text>
-          <Text className="text-gray-400 text-sm mt-1">
+        <View style={{ alignItems: "center", marginTop: 80 }}>
+          <Ionicons name="clipboard-outline" size={52} color={C.smoke} style={{ opacity: 0.3, marginBottom: 12 }} />
+          <Text style={{ color: C.smoke, fontWeight: "600", fontFamily: "Inter_600SemiBold" }}>Belum ada riwayat</Text>
+          <Text style={{ color: C.smoke, opacity: 0.55, fontSize: 13, marginTop: 4, fontFamily: "Inter_400Regular" }}>
             Scan makanan dulu untuk mulai mencatat
           </Text>
         </View>
       ) : (
         groupedList.map((group) => (
-          <View key={group.tanggal} className="mb-6">
-            <View className="bg-green-600 rounded-2xl p-4 mb-3">
-              <Text className="text-white font-bold text-base">
+          <View key={group.tanggal} style={{ marginBottom: 20 }}>
+            <View style={{ backgroundColor: C.smoke, borderRadius: 16, padding: 16, marginBottom: 10 }}>
+              <Text style={{ color: C.white, fontWeight: "bold", fontSize: 15, fontFamily: "Inter_700Bold" }}>
                 {formatTanggal(group.tanggal)}
               </Text>
-              <Text className="text-green-100 text-xs mt-0.5">
+              <Text style={{ color: "rgba(255,255,255,0.6)", fontSize: 12, marginTop: 2, fontFamily: "Inter_400Regular" }}>
                 {group.entries.length} kali scan
               </Text>
               <TotalHarian total={group.totalHarian} />
             </View>
-
             {group.entries.map((entry) => (
-              <EntryCard
-                key={entry.id}
-                entry={entry}
-                onHapus={() => hapusEntry(entry.id)}
-              />
+              <EntryCard key={entry.id} entry={entry} onHapus={() => hapusEntry(entry.id)} />
             ))}
           </View>
         ))
