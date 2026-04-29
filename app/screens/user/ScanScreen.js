@@ -7,6 +7,7 @@ import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { deteksiMakanan } from "../../utils/geminiHelper";
+import { useAuth } from "../../context/AuthContext";
 import { C } from "../../theme/colors";
 
 const NUTRISI_FIELDS = [
@@ -22,8 +23,9 @@ const MANUAL_EMPTY = {
   karbohidrat: "", lemak: "", serat: "",
 };
 
-async function simpanHistory(data) {
-  const raw = await AsyncStorage.getItem("@nutriscan_history");
+async function simpanHistory(uid, data) {
+  const key = `@nutriscan_history_${uid}`;
+  const raw = await AsyncStorage.getItem(key);
   const history = raw ? JSON.parse(raw) : [];
   const now = new Date();
   history.unshift({
@@ -33,7 +35,7 @@ async function simpanHistory(data) {
     makananList: data.makananList,
     total: data.total,
   });
-  await AsyncStorage.setItem("@nutriscan_history", JSON.stringify(history));
+  await AsyncStorage.setItem(key, JSON.stringify(history));
 }
 
 function hitungTotal(list) {
@@ -43,8 +45,9 @@ function hitungTotal(list) {
       protein:     acc.protein     + (parseFloat(item.protein)     || 0),
       karbohidrat: acc.karbohidrat + (parseFloat(item.karbohidrat) || 0),
       lemak:       acc.lemak       + (parseFloat(item.lemak)       || 0),
+      serat:       acc.serat       + (parseFloat(item.serat)       || 0),
     }),
-    { kalori: 0, protein: 0, karbohidrat: 0, lemak: 0 }
+    { kalori: 0, protein: 0, karbohidrat: 0, lemak: 0, serat: 0 }
   );
 }
 
@@ -114,6 +117,7 @@ function KartuTotal({ total }) {
    TAB 1 — SCAN FOTO
 ══════════════════════════════ */
 function TabScan() {
+  const { user } = useAuth();
   const [foto, setFoto] = useState(null);
   const [hasil, setHasil] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -138,7 +142,7 @@ function TabScan() {
       setLoading(true);
       const data = await deteksiMakanan(foto.base64);
       setHasil(data);
-      await simpanHistory(data);
+      await simpanHistory(user.uid, data);
     } catch (error) {
       Alert.alert("Gagal", error.message);
     } finally {
@@ -209,6 +213,7 @@ function TabScan() {
    TAB 2 — INPUT MANUAL
 ══════════════════════════════ */
 function TabManual() {
+  const { user } = useAuth();
   const [manualList, setManualList] = useState([]);
   const [form, setForm] = useState(MANUAL_EMPTY);
 
@@ -226,7 +231,7 @@ function TabManual() {
   async function simpan() {
     if (manualList.length === 0) { Alert.alert("Kosong", "Tambahkan minimal satu makanan"); return; }
     const total = hitungTotal(manualList);
-    await simpanHistory({ makananList: manualList, total });
+    await simpanHistory(user.uid, { makananList: manualList, total });
     Alert.alert("Tersimpan", "Data gizi berhasil disimpan ke riwayat");
     setManualList([]);
   }

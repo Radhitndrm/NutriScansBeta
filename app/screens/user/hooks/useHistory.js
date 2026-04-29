@@ -1,14 +1,19 @@
 import { useState, useEffect, useCallback } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useAuth } from "../../../context/AuthContext";
 
 export default function useHistory() {
+  const { user } = useAuth();
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const key = user ? `@nutriscan_history_${user.uid}` : null;
+
   const loadHistory = useCallback(async () => {
+    if (!key) return;
     try {
       setLoading(true);
-      const raw = await AsyncStorage.getItem("@nutriscan_history");
+      const raw = await AsyncStorage.getItem(key);
       const parsed = raw ? JSON.parse(raw) : [];
       setHistory(parsed);
     } catch (err) {
@@ -17,16 +22,17 @@ export default function useHistory() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [key]);
 
   useEffect(() => {
     loadHistory();
-  }, []);
+  }, [loadHistory]);
 
   async function hapusEntry(id) {
+    if (!key) return;
     const baru = history.filter((h) => h.id !== id);
     setHistory(baru);
-    await AsyncStorage.setItem("@nutriscan_history", JSON.stringify(baru));
+    await AsyncStorage.setItem(key, JSON.stringify(baru));
   }
 
   const grouped = history.reduce((acc, entry) => {
@@ -56,7 +62,6 @@ export default function useHistory() {
     })
     .sort((a, b) => b.tanggal.localeCompare(a.tanggal));
 
-  // TOTAL MINGGUAN
   const weeklySummary = groupedList.slice(0, 7).reduce(
     (acc, day) => ({
       kalori: acc.kalori + day.totalHarian.kalori,
@@ -69,7 +74,7 @@ export default function useHistory() {
 
   return {
     groupedList,
-    weeklySummary, // opsional (buat fitur lanjut)
+    weeklySummary,
     loading,
     hapusEntry,
     refresh: loadHistory,
