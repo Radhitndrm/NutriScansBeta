@@ -198,7 +198,7 @@ function ModalEditProfil({ visible, profil, onSimpan, onBatal }) {
 
 /* ── Screen utama ── */
 export default function ProfileScreen() {
-  const { profil, akg, todayTotal, rekomendasi, loading, user, logout, updateProfil } = useProfile();
+  const { profil, akg, todayTotal, loading, user, logout, updateProfil } = useProfile();
   const [showEdit, setShowEdit] = useState(false);
 
   if (loading) {
@@ -290,35 +290,6 @@ export default function ProfileScreen() {
           <View style={{ backgroundColor: C.card, borderRadius: 16, padding: 18, marginBottom: 24, alignItems: "center" }}>
             <Text style={{ color: C.smoke, opacity: 0.5, fontFamily: "Inter_400Regular" }}>Data AKG tidak tersedia</Text>
           </View>
-        )}
-
-        {/* Rekomendasi */}
-        {rekomendasi.length > 0 && (
-          <>
-            <Text style={{ color: C.smoke, fontWeight: "bold", fontSize: 14, fontFamily: "Inter_700Bold", letterSpacing: 0.5 }}>
-              REKOMENDASI MAKANAN
-            </Text>
-            <Text style={{ color: C.smoke, opacity: 0.55, fontSize: 12, marginBottom: 10, marginTop: 2, fontFamily: "Inter_400Regular" }}>
-              Berdasarkan nutrisi yang masih kurang hari ini
-            </Text>
-            <View style={{ marginBottom: 24 }}>
-              {rekomendasi.map((item, i) => (
-                <View key={i} style={{ backgroundColor: C.card, borderRadius: 14, padding: 14, marginBottom: 10, flexDirection: "row", alignItems: "center" }}>
-                  <View style={{ width: 44, height: 44, borderRadius: 12, backgroundColor: C.cardDark, alignItems: "center", justifyContent: "center", marginRight: 12 }}>
-                    <Ionicons name="restaurant-outline" size={22} color={C.smoke} />
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <Text style={{ color: C.smoke, fontWeight: "bold", fontSize: 13, fontFamily: "Inter_600SemiBold" }}>{item.nama}</Text>
-                    <Text style={{ color: C.smoke, opacity: 0.55, fontSize: 12, fontFamily: "Inter_400Regular" }}>per {item.porsi}</Text>
-                    <View style={{ flexDirection: "row", gap: 8, marginTop: 4 }}>
-                      <Text style={{ color: C.smoke, opacity: 0.7, fontSize: 11, fontFamily: "Inter_400Regular" }}>{item.kalori} kkal</Text>
-                      <Text style={{ color: C.smoke, opacity: 0.7, fontSize: 11, fontFamily: "Inter_400Regular" }}>{item.protein}g protein</Text>
-                    </View>
-                  </View>
-                </View>
-              ))}
-            </View>
-          </>
         )}
 
         {/* Logout */}
