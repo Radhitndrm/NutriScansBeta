@@ -14,13 +14,7 @@ import * as ImagePicker from "expo-image-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { deteksiMakanan } from "../../utils/geminiHelper";
 
-const C = {
-  smoke: "#4a4f42",
-  skyWarm: "#ccc9be",
-  card: "#d4d2c9",
-  cardDark: "#c4c2b8",
-  placeholder: "#8a8880",
-};
+import { C } from "../../theme/colors";
 
 const NUTRISI_FIELDS = [
   { key: "kalori",      label: "Kalori",      satuan: "kkal" },

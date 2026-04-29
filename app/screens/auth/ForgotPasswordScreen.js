@@ -11,13 +11,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { auth } from "../../utils/firebaseConfig";
-
-const C = {
-  smoke: "#4a4f42",
-  skyWarm: "#ccc9be",
-  inputBg: "#d4d2c9",
-  placeholder: "#8a8880",
-};
+import { C } from "../../theme/colors";
 
 export default function ForgotPasswordScreen({ navigation }) {
   const [email, setEmail] = useState("");
