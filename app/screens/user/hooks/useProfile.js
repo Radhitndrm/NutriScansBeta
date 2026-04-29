@@ -56,5 +56,11 @@ export default function useProfile() {
     }
   }
 
-  return { profil, akg, todayTotal, rekomendasi, loading, user, logout };
+  async function updateProfil(patch) {
+    const updated = { ...profil, ...patch };
+    await AsyncStorage.setItem("@nutriscan_profil", JSON.stringify(updated));
+    setProfil(updated);
+  }
+
+  return { profil, akg, todayTotal, rekomendasi, loading, user, logout, updateProfil };
 }
