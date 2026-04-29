@@ -53,7 +53,7 @@ export default function useRegister(navigation) {
         subKategori: kategori === "ibu_hamil" ? trimester : usiaBalita,
         namaAnak: kategori === "balita" ? namaAnak : null,
       };
-      await AsyncStorage.setItem("@nutriscan_profil", JSON.stringify(profil));
+      await AsyncStorage.setItem(`@nutriscan_profil_${userCredential.user.uid}`, JSON.stringify(profil));
     } catch {
       Alert.alert("Gagal Daftar", "Email sudah dipakai atau tidak valid");
     } finally {
