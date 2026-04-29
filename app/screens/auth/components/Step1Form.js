@@ -1,12 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-
-const C = {
-  smoke: "#4a4f42",
-  inputBg: "#d4d2c9",
-  placeholder: "#8a8880",
-};
+import { C } from "../../../theme/colors";
 
 function InputRow({
   icon,
