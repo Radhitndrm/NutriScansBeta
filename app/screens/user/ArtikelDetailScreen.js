@@ -2,7 +2,7 @@ import React from "react";
 import { ScrollView, View, Text, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-const C = { smoke: "#4a4f42", skyWarm: "#ccc9be", card: "#d4d2c9" };
+import { C } from "../../theme/colors";
 
 export default function ArtikelDetailScreen({ route, navigation }) {
   const { artikel } = route.params;

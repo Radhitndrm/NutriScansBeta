@@ -4,10 +4,7 @@ import useRegister from "./hooks/useRegister";
 import Step1Form from "./components/Step1Form";
 import Step2Form from "./components/Step2Form";
 
-const C = {
-  smoke: "#4a4f42",
-  skyWarm: "#ccc9be",
-};
+import { C } from "../../theme/colors";
 
 export default function RegisterScreen({ navigation }) {
   const reg = useRegister(navigation);

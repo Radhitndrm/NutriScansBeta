@@ -11,13 +11,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../../context/AuthContext";
-
-const C = {
-  smoke: "#4a4f42",
-  skyWarm: "#ccc9be",
-  inputBg: "#d4d2c9",
-  placeholder: "#8a8880",
-};
+import { C } from "../../theme/colors";
 
 function InputRow({
   icon,
