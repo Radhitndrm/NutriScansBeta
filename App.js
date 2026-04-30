@@ -6,8 +6,17 @@ import { StatusBar } from "expo-status-bar";
 import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-context";
-import { useFonts, Inter_400Regular, Inter_500Medium, Inter_600SemiBold, Inter_700Bold } from "@expo-google-fonts/inter";
+import {
+  SafeAreaProvider,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
+import {
+  useFonts,
+  Inter_400Regular,
+  Inter_500Medium,
+  Inter_600SemiBold,
+  Inter_700Bold,
+} from "@expo-google-fonts/inter";
 
 import { AuthProvider, useAuth } from "./app/context/AuthContext";
 import { C } from "./app/theme/colors";
@@ -40,31 +49,42 @@ const HEADER_OPTS = {
 };
 
 const TAB_ROUTES = {
-  Scan:    { active: "camera",     inactive: "camera-outline",    title: "Scan" },
-  History: { active: "time",       inactive: "time-outline",      title: "Riwayat" },
-  Info:    { active: "newspaper",  inactive: "newspaper-outline", title: "Info" },
-  Tips:    { active: "bulb",       inactive: "bulb-outline",      title: "Tips" },
-  Profile: { active: "person",     inactive: "person-outline",    title: "Profil" },
+  Scan: { active: "camera", inactive: "camera-outline", title: "Scan" },
+  History: { active: "time", inactive: "time-outline", title: "Riwayat" },
+  Info: { active: "newspaper", inactive: "newspaper-outline", title: "Info" },
+  Tips: { active: "bulb", inactive: "bulb-outline", title: "Tips" },
+  Profile: { active: "person", inactive: "person-outline", title: "Profil" },
 };
 
 /* ── Custom Tab Bar ── */
 function CustomTabBar({ state, descriptors, navigation }) {
   const insets = useSafeAreaInsets();
   return (
-    <View style={{
-      flexDirection: "row",
-      backgroundColor: C.tabBg,
-      paddingTop: 10,
-      paddingBottom: insets.bottom + 8,
-      paddingHorizontal: 6,
-    }}>
+    <View
+      style={{
+        flexDirection: "row",
+        backgroundColor: C.tabBg,
+        paddingTop: 10,
+        paddingBottom: insets.bottom + 8,
+        paddingHorizontal: 6,
+      }}
+    >
       {state.routes.map((route, index) => {
         const isFocused = state.index === index;
-        const meta = TAB_ROUTES[route.name] ?? { active: "help", inactive: "help-outline", title: route.name };
+        const meta = TAB_ROUTES[route.name] ?? {
+          active: "help",
+          inactive: "help-outline",
+          title: route.name,
+        };
 
         const onPress = () => {
-          const event = navigation.emit({ type: "tabPress", target: route.key, canPreventDefault: true });
-          if (!isFocused && !event.defaultPrevented) navigation.navigate(route.name);
+          const event = navigation.emit({
+            type: "tabPress",
+            target: route.key,
+            canPreventDefault: true,
+          });
+          if (!isFocused && !event.defaultPrevented)
+            navigation.navigate(route.name);
         };
 
         return (
@@ -74,23 +94,29 @@ function CustomTabBar({ state, descriptors, navigation }) {
             style={{ flex: 1, alignItems: "center" }}
             activeOpacity={0.7}
           >
-            <View style={{
-              backgroundColor: isFocused ? C.skyWarm : "transparent",
-              borderRadius: 14,
-              padding: 8,
-              marginBottom: 3,
-            }}>
+            <View
+              style={{
+                backgroundColor: isFocused ? C.skyWarm : "transparent",
+                borderRadius: 14,
+                padding: 8,
+                marginBottom: 3,
+              }}
+            >
               <Ionicons
                 name={isFocused ? meta.active : meta.inactive}
                 size={22}
                 color={isFocused ? C.smoke : "rgba(255,255,255,0.45)"}
               />
             </View>
-            <Text style={{
-              color: isFocused ? C.skyWarm : "rgba(255,255,255,0.45)",
-              fontSize: 10,
-              fontFamily: isFocused ? "Inter_600SemiBold" : "Inter_400Regular",
-            }}>
+            <Text
+              style={{
+                color: isFocused ? C.skyWarm : "rgba(255,255,255,0.45)",
+                fontSize: 10,
+                fontFamily: isFocused
+                  ? "Inter_600SemiBold"
+                  : "Inter_400Regular",
+              }}
+            >
               {meta.title}
             </Text>
           </TouchableOpacity>
@@ -113,8 +139,16 @@ function AuthStack() {
 function InfoStack() {
   return (
     <Stack.Navigator screenOptions={HEADER_OPTS}>
-      <Stack.Screen name="ArtikelList" component={ArtikelListScreen} options={{ title: "Artikel Gizi" }} />
-      <Stack.Screen name="ArtikelDetail" component={ArtikelDetailScreen} options={{ title: "Artikel" }} />
+      <Stack.Screen
+        name="ArtikelList"
+        component={ArtikelListScreen}
+        options={{ title: "Artikel Gizi" }}
+      />
+      <Stack.Screen
+        name="ArtikelDetail"
+        component={ArtikelDetailScreen}
+        options={{ title: "Artikel" }}
+      />
     </Stack.Navigator>
   );
 }
@@ -122,8 +156,16 @@ function InfoStack() {
 function TipsStack() {
   return (
     <Stack.Navigator screenOptions={HEADER_OPTS}>
-      <Stack.Screen name="TipsList" component={TipsListScreen} options={{ title: "Tips Gizi" }} />
-      <Stack.Screen name="TipsDetail" component={TipsDetailScreen} options={{ title: "Tips" }} />
+      <Stack.Screen
+        name="TipsList"
+        component={TipsListScreen}
+        options={{ title: "Tips Gizi" }}
+      />
+      <Stack.Screen
+        name="TipsDetail"
+        component={TipsDetailScreen}
+        options={{ title: "Tips" }}
+      />
     </Stack.Navigator>
   );
 }
@@ -133,12 +175,29 @@ function MainTabs() {
     <Tab.Navigator
       tabBar={(props) => <CustomTabBar {...props} />}
       screenOptions={{ headerShown: false }}
+      initialRouteName="Scan"
     >
-      <Tab.Screen name="Scan"    component={ScanScreen}    options={{ headerShown: true, ...HEADER_OPTS, headerTitle: "Scan Makanan" }} />
-      <Tab.Screen name="History" component={HistoryScreen} options={{ headerShown: true, ...HEADER_OPTS, headerTitle: "Riwayat" }} />
-      <Tab.Screen name="Info"    component={InfoStack} />
-      <Tab.Screen name="Tips"    component={TipsStack} />
-      <Tab.Screen name="Profile" component={ProfileScreen} options={{ headerShown: true, ...HEADER_OPTS, headerTitle: "Profil" }} />
+      <Tab.Screen name="Info" component={InfoStack} />
+      <Tab.Screen name="Tips" component={TipsStack} />
+      <Tab.Screen
+        name="Scan"
+        component={ScanScreen}
+        options={{
+          headerShown: true,
+          ...HEADER_OPTS,
+          headerTitle: "Scan Makanan",
+        }}
+      />
+      <Tab.Screen
+        name="History"
+        component={HistoryScreen}
+        options={{ headerShown: true, ...HEADER_OPTS, headerTitle: "Riwayat" }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{ headerShown: true, ...HEADER_OPTS, headerTitle: "Profil" }}
+      />
     </Tab.Navigator>
   );
 }
@@ -147,7 +206,14 @@ function RootNavigator() {
   const { user, loading } = useAuth();
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: C.skyWarm }}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: C.skyWarm,
+        }}
+      >
         <ActivityIndicator size="large" color={C.smoke} />
       </View>
     );
@@ -156,11 +222,23 @@ function RootNavigator() {
 }
 
 export default function App() {
-  const [fontsLoaded] = useFonts({ Inter_400Regular, Inter_500Medium, Inter_600SemiBold, Inter_700Bold });
+  const [fontsLoaded] = useFonts({
+    Inter_400Regular,
+    Inter_500Medium,
+    Inter_600SemiBold,
+    Inter_700Bold,
+  });
 
   if (!fontsLoaded) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: C.skyWarm }}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: C.skyWarm,
+        }}
+      >
         <ActivityIndicator size="large" color={C.smoke} />
       </View>
     );
