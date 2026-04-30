@@ -3,6 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth } from "../../../context/AuthContext";
 import { getAKG } from "../../../data/akgData";
 import { getRekomendasiMakanan } from "../../../data/nutrisiDatabase";
+import { resolveKategori } from "../../../utils/artikelConfig";
 
 const NUTRISI_KEYS = ["kalori", "protein", "karbohidrat", "lemak", "serat"];
 
@@ -24,6 +25,8 @@ export default function useProfile() {
       const data = await AsyncStorage.getItem(`@nutriscan_profil_${user.uid}`);
       if (data) {
         const parsed = JSON.parse(data);
+        // Infer kategori dari subKategori kalau field-nya hilang
+        if (!parsed.kategori) parsed.kategori = resolveKategori(parsed);
         setProfil(parsed);
         const akgData = getAKG(parsed.kategori, parsed.subKategori);
         setAkg(akgData);
