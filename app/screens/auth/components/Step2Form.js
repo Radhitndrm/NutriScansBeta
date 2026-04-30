@@ -2,13 +2,7 @@ import React from "react";
 import { View, Text, TextInput, TouchableOpacity, ActivityIndicator } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-const C = {
-  smoke: "#4a4f42",
-  skyWarm: "#ccc9be",
-  inputBg: "#d4d2c9",
-  selectedBg: "#b8bdb2",
-  placeholder: "#8a8880",
-};
+import { C } from "../../../theme/colors";
 
 const KATEGORI = [
   { id: "ibu_hamil", label: "Ibu Hamil", icon: "heart-circle-outline" },
