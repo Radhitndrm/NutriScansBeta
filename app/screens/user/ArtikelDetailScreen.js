@@ -42,7 +42,7 @@ async function bukaUrl(url) {
   }
 }
 
-export default function ArtikelDetailScreen({ route, navigation }) {
+export default function ArtikelDetailScreen({ route }) {
   const { artikel } = route.params;
 
   const [fontsLoaded] = useFonts({ Inter_400Regular, Inter_700Bold });
@@ -64,17 +64,6 @@ export default function ArtikelDetailScreen({ route, navigation }) {
       style={{ flex: 1, backgroundColor: C.skyWarm }}
       contentContainerStyle={{ padding: 20, paddingBottom: 40 }}
     >
-      {/* Tombol kembali */}
-      <TouchableOpacity
-        onPress={() => navigation.goBack()}
-        style={{ flexDirection: "row", alignItems: "center", marginBottom: 20 }}
-      >
-        <Ionicons name="arrow-back" size={20} color={C.smoke} />
-        <Text style={{ color: C.smoke, marginLeft: 6, fontSize: 14, fontFamily: "Inter_400Regular" }}>
-          Kembali
-        </Text>
-      </TouchableOpacity>
-
       {/* Judul */}
       <Text
         style={{
