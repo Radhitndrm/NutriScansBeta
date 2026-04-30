@@ -60,6 +60,14 @@ export default function useProfile() {
     const updated = { ...profil, ...patch };
     await AsyncStorage.setItem(`@nutriscan_profil_${user.uid}`, JSON.stringify(updated));
     setProfil(updated);
+
+    // Refresh AKG kalau subKategori berubah
+    if (patch.subKategori && patch.subKategori !== profil?.subKategori) {
+      const akgBaru = getAKG(updated.kategori, updated.subKategori);
+      setAkg(akgBaru);
+      // Hapus cache artikel supaya halaman Info langsung fetch ulang
+      await AsyncStorage.removeItem(`@nutriscan_artikel_${updated.kategori ?? "all"}`);
+    }
   }
 
   return { profil, akg, todayTotal, rekomendasi, loading, user, logout, updateProfil };

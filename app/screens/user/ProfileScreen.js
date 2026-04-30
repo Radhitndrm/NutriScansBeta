@@ -8,6 +8,19 @@ import * as ImagePicker from "expo-image-picker";
 import { C } from "../../theme/colors";
 import useProfile from "./hooks/useProfile";
 
+const TRIMESTER = [
+  { id: "trimester_1", label: "Trimester 1", sub: "0 – 12 minggu" },
+  { id: "trimester_2", label: "Trimester 2", sub: "13 – 26 minggu" },
+  { id: "trimester_3", label: "Trimester 3", sub: "27 – 40 minggu" },
+];
+
+const USIA_BALITA = [
+  { id: "0-6_bulan",  label: "0 – 6 Bulan" },
+  { id: "7-11_bulan", label: "7 – 11 Bulan" },
+  { id: "1-3_tahun",  label: "1 – 3 Tahun" },
+  { id: "4-6_tahun",  label: "4 – 6 Tahun" },
+];
+
 const GIZI = [
   { key: "kalori",      label: "Kalori",      satuan: "kkal" },
   { key: "protein",     label: "Protein",     satuan: "g" },
@@ -50,6 +63,87 @@ function InfoBaris({ label, nilai }) {
       <Text style={{ color: C.smoke, opacity: 0.6, fontFamily: "Inter_400Regular" }}>{label}</Text>
       <Text style={{ color: C.smoke, fontWeight: "600", fontFamily: "Inter_600SemiBold" }}>{nilai}</Text>
     </View>
+  );
+}
+
+/* ── Modal Ganti Sub Kategori ── */
+function ModalGantiSubKategori({ visible, profil, onSimpan, onBatal }) {
+  const [pilihan, setPilihan] = useState(profil?.subKategori ?? null);
+  const opsi = profil?.kategori === "ibu_hamil" ? TRIMESTER : USIA_BALITA;
+
+  return (
+    <Modal visible={visible} transparent animationType="slide" onRequestClose={onBatal}>
+      <TouchableOpacity
+        style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.45)" }}
+        activeOpacity={1}
+        onPress={onBatal}
+      />
+      <View style={{
+        backgroundColor: C.skyWarm,
+        borderTopLeftRadius: 28,
+        borderTopRightRadius: 28,
+        paddingHorizontal: 24,
+        paddingTop: 12,
+        paddingBottom: 40,
+      }}>
+        <View style={{ width: 40, height: 4, backgroundColor: C.cardDark, borderRadius: 2, alignSelf: "center", marginBottom: 24 }} />
+
+        <Text style={{ color: C.smoke, fontFamily: "Inter_700Bold", fontSize: 18, marginBottom: 6 }}>
+          Ganti Sub Kategori
+        </Text>
+        <Text style={{ color: C.smoke, opacity: 0.55, fontSize: 13, fontFamily: "Inter_400Regular", marginBottom: 20 }}>
+          {profil?.kategori === "ibu_hamil" ? "Pilih trimester kehamilan saat ini" : "Pilih kelompok usia anak"}
+        </Text>
+
+        {opsi.map((item) => {
+          const selected = pilihan === item.id;
+          return (
+            <TouchableOpacity
+              key={item.id}
+              onPress={() => setPilihan(item.id)}
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                backgroundColor: selected ? C.selectedBg : C.inputBg,
+                borderWidth: 2,
+                borderColor: selected ? C.smoke : "transparent",
+                borderRadius: 14,
+                paddingHorizontal: 16,
+                paddingVertical: 14,
+                marginBottom: 10,
+              }}
+            >
+              <Text style={{ color: C.smoke, fontFamily: "Inter_600SemiBold", fontSize: 14 }}>
+                {item.label}
+              </Text>
+              {item.sub && (
+                <Text style={{ color: C.smoke, opacity: 0.55, fontSize: 13, fontFamily: "Inter_400Regular" }}>
+                  {item.sub}
+                </Text>
+              )}
+              {selected && <Ionicons name="checkmark-circle" size={20} color={C.smoke} />}
+            </TouchableOpacity>
+          );
+        })}
+
+        <View style={{ flexDirection: "row", gap: 12, marginTop: 8 }}>
+          <TouchableOpacity
+            onPress={onBatal}
+            style={{ flex: 1, borderRadius: 14, paddingVertical: 14, alignItems: "center", backgroundColor: C.card }}
+          >
+            <Text style={{ color: C.smoke, fontFamily: "Inter_600SemiBold" }}>Batal</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => pilihan && onSimpan(pilihan)}
+            disabled={!pilihan}
+            style={{ flex: 2, borderRadius: 14, paddingVertical: 14, alignItems: "center", backgroundColor: pilihan ? C.smoke : C.cardDark }}
+          >
+            <Text style={{ color: C.white, fontFamily: "Inter_600SemiBold" }}>Simpan</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </Modal>
   );
 }
 
@@ -200,6 +294,7 @@ function ModalEditProfil({ visible, profil, onSimpan, onBatal }) {
 export default function ProfileScreen() {
   const { profil, akg, todayTotal, loading, user, logout, updateProfil } = useProfile();
   const [showEdit, setShowEdit] = useState(false);
+  const [showEditSubKat, setShowEditSubKat] = useState(false);
 
   if (loading) {
     return (
@@ -216,6 +311,11 @@ export default function ProfileScreen() {
     if (!patch.username) { Alert.alert("Error", "Nama pengguna tidak boleh kosong"); return; }
     await updateProfil(patch);
     setShowEdit(false);
+  }
+
+  async function handleSimpanSubKat(subKategori) {
+    await updateProfil({ subKategori });
+    setShowEditSubKat(false);
   }
 
   return (
@@ -265,7 +365,18 @@ export default function ProfileScreen() {
         <View style={{ backgroundColor: C.card, borderRadius: 16, marginBottom: 24, overflow: "hidden" }}>
           <InfoBaris label="Nama Pengguna" nilai={profil?.username || "-"} />
           <InfoBaris label="Kategori" nilai={labelKategori} />
-          <InfoBaris label="Sub Kategori" nilai={akg?.label || profil?.subKategori || "-"} />
+          <TouchableOpacity
+            onPress={() => setShowEditSubKat(true)}
+            style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingVertical: 14, paddingHorizontal: 16, borderBottomWidth: 1, borderBottomColor: C.cardDark }}
+          >
+            <Text style={{ color: C.smoke, opacity: 0.6, fontFamily: "Inter_400Regular" }}>Sub Kategori</Text>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+              <Text style={{ color: C.smoke, fontWeight: "600", fontFamily: "Inter_600SemiBold" }}>
+                {akg?.label || profil?.subKategori || "-"}
+              </Text>
+              <Ionicons name="chevron-forward" size={14} color={C.smoke} style={{ opacity: 0.5 }} />
+            </View>
+          </TouchableOpacity>
           {profil?.namaAnak && <InfoBaris label="Nama Anak" nilai={profil.namaAnak} />}
           <View style={{ flexDirection: "row", justifyContent: "space-between", paddingVertical: 14, paddingHorizontal: 16 }}>
             <Text style={{ color: C.smoke, opacity: 0.6, fontFamily: "Inter_400Regular" }}>Email</Text>
@@ -309,6 +420,16 @@ export default function ProfileScreen() {
           profil={profil}
           onSimpan={handleSimpan}
           onBatal={() => setShowEdit(false)}
+        />
+      )}
+
+      {/* Modal ganti sub kategori */}
+      {showEditSubKat && (
+        <ModalGantiSubKategori
+          visible={showEditSubKat}
+          profil={profil}
+          onSimpan={handleSimpanSubKat}
+          onBatal={() => setShowEditSubKat(false)}
         />
       )}
     </View>
