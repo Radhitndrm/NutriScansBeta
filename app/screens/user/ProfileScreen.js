@@ -8,6 +8,16 @@ import * as ImagePicker from "expo-image-picker";
 import { C } from "../../theme/colors";
 import useProfile from "./hooks/useProfile";
 
+const LABEL_SUB = {
+  trimester_1: "Trimester 1",
+  trimester_2: "Trimester 2",
+  trimester_3: "Trimester 3",
+  "0-6_bulan":  "0 – 6 Bulan",
+  "7-11_bulan": "7 – 11 Bulan",
+  "1-3_tahun":  "1 – 3 Tahun",
+  "4-6_tahun":  "4 – 6 Tahun",
+};
+
 const TRIMESTER = [
   { id: "trimester_1", label: "Trimester 1", sub: "0 – 12 minggu" },
   { id: "trimester_2", label: "Trimester 2", sub: "13 – 26 minggu" },
@@ -372,7 +382,7 @@ export default function ProfileScreen() {
             <Text style={{ color: C.smoke, opacity: 0.6, fontFamily: "Inter_400Regular" }}>Sub Kategori</Text>
             <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
               <Text style={{ color: C.smoke, fontWeight: "600", fontFamily: "Inter_600SemiBold" }}>
-                {akg?.label || profil?.subKategori || "-"}
+                {LABEL_SUB[profil?.subKategori] || akg?.label || profil?.subKategori || "-"}
               </Text>
               <Ionicons name="chevron-forward" size={14} color={C.smoke} style={{ opacity: 0.5 }} />
             </View>
