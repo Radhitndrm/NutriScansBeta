@@ -4,7 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useFonts } from "expo-font";
 import { Inter_400Regular, Inter_700Bold } from "@expo-google-fonts/inter";
 
-const C = { smoke: "#4a4f42", skyWarm: "#ccc9be", card: "#e6e3db" };
+import { C } from "../../theme/colors";
 
 export default function ArtikelDetailScreen({ route, navigation }) {
   const { artikel } = route.params;

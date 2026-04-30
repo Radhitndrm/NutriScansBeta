@@ -70,8 +70,8 @@ Target AKG disesuaikan berdasarkan usia anak (0–5 tahun). Nutrien prioritas: p
 ### 🔄 Dalam Pengembangan
 
 #### Fase 1 — Core & Profil
-- [ ] **Pilih kategori user** saat registrasi (ibu hamil / balita, usia, trimester)
-- [ ] **Data AKG Kemenkes 2019** per kategori dalam format JSON lokal
+- ✅ **Pilih kategori user** saat registrasi (ibu hamil / balita, usia, trimester)
+- ✅ **Data AKG Kemenkes 2019** per kategori dalam format JSON lokal
 - [ ] **ProfileScreen** — tampilkan target AKG + ring progress harian
 - [ ] **HistoryScreen** — log makanan harian + progress bar per nutrien
 

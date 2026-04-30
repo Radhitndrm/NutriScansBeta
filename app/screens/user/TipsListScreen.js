@@ -3,7 +3,7 @@ import { ScrollView, View, Text, TouchableOpacity } from "react-native";
 import { TIPS } from "../../data/tipsData";
 import useUserProfil from "./hooks/useUserProfil";
 
-const C = { smoke: "#4a4f42", skyWarm: "#ccc9be", card: "#d4d2c9" };
+import { C } from "../../theme/colors";
 
 const LABEL = { ibu_hamil: "Ibu Hamil 🤰", balita: "Balita 👶" };
 

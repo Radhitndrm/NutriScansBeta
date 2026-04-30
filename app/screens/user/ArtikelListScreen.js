@@ -5,7 +5,7 @@ import useUserProfil from "./hooks/useUserProfil";
 import { useFonts } from "expo-font";
 import { Inter_400Regular, Inter_700Bold } from "@expo-google-fonts/inter";
 
-const C = { smoke: "#4a4f42", skyWarm: "#ccc9be", card: "#d4d2c9" };
+import { C } from "../../theme/colors";
 
 const LABEL = { ibu_hamil: "Ibu Hamil 🤰🏿", balita: "Balita 👶🏿" };
 
