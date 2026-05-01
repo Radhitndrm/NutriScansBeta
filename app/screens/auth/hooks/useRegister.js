@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Alert } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { doc, setDoc } from "firebase/firestore";
 import { useAuth } from "../../../context/AuthContext";
+import { db } from "../../../utils/firebaseConfig";
 
 function validasiStep1(username, email, password, konfirmasi) {
   if (!username || !email || !password || !konfirmasi) return "Semua kolom harus diisi";
@@ -45,15 +46,16 @@ export default function useRegister(navigation) {
     try {
       setLoading(true);
       const userCredential = await register(email, password);
+      const uid = userCredential.user.uid;
       const profil = {
-        uid: userCredential.user.uid,
+        uid,
         username,
         email,
         kategori,
         subKategori: kategori === "ibu_hamil" ? trimester : usiaBalita,
         namaAnak: kategori === "balita" ? namaAnak : null,
       };
-      await AsyncStorage.setItem(`@nutriscan_profil_${userCredential.user.uid}`, JSON.stringify(profil));
+      await setDoc(doc(db, "users", uid), profil);
     } catch {
       Alert.alert("Gagal Daftar", "Email sudah dipakai atau tidak valid");
     } finally {
