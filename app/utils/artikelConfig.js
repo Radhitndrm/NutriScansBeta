@@ -19,6 +19,23 @@ export function getFeedsForKategori(kategori) {
   return RSS_FEEDS_MAP[kategori] ?? RSS_FEEDS_MAP.default;
 }
 
+// Feed tips per kategori
+const TIPS_FEEDS_MAP = {
+  ibu_hamil: [
+    { url: GNEWS_BASE + encodeURIComponent("tips kesehatan ibu hamil gizi kehamilan"), sumber: "Google News" },
+  ],
+  balita: [
+    { url: GNEWS_BASE + encodeURIComponent("tips nutrisi anak balita mpasi sehat"), sumber: "Google News" },
+  ],
+  default: [
+    { url: GNEWS_BASE + encodeURIComponent("tips gizi kesehatan ibu anak"), sumber: "Google News" },
+  ],
+};
+
+export function getFeedsForTips(kategori) {
+  return TIPS_FEEDS_MAP[kategori] ?? TIPS_FEEDS_MAP.default;
+}
+
 // ── Parser RSS XML sederhana (tanpa library tambahan) ──────────────────────
 
 function extractCdata(xml, tag) {
