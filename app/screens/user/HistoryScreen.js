@@ -277,7 +277,7 @@ function BarChart({ week, groupedList, giziKey }) {
               <View style={{
                 width: "100%",
                 height: Math.max((val / max) * 120, val > 0 ? 6 : 0),
-                backgroundColor: "#7fa8c9",
+                backgroundColor: C.smoke,
                 borderRadius: 6,
               }} />
             </View>
