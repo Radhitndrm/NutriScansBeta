@@ -5,7 +5,7 @@ import { db } from "../../../utils/firebaseConfig";
 import { useAuth } from "../../../context/AuthContext";
 import {
   getFeedsForTips, fetchRssItems,
-  CACHE_TTL_MS, resolveKategori, hitungRelevani,
+  CACHE_TTL_MS, resolveKategori,
 } from "../../../utils/artikelConfig";
 import { TIPS } from "../../../data/tipsData";
 
@@ -98,9 +98,11 @@ export default function useTips() {
         }
 
         if (rawItems && rawItems.length > 0) {
-          const sorted = [...rawItems].sort(
-            (a, b) => hitungRelevani(b, kategori) - hitungRelevani(a, kategori)
-          );
+          const sorted = [...rawItems].sort((a, b) => {
+            const tA = a.pubDate ? new Date(a.pubDate).getTime() : 0;
+            const tB = b.pubDate ? new Date(b.pubDate).getTime() : 0;
+            return tB - tA;
+          });
           const data = sorted.map((item) => mapItem(item, sumberBerhasil));
           setTips(data);
           await AsyncStorage.setItem(key, JSON.stringify({ data, timestamp: Date.now() }));

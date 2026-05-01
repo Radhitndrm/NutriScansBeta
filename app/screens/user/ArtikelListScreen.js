@@ -16,18 +16,22 @@ import { resolveKategori } from "../../utils/artikelConfig";
 import { C } from "../../theme/colors";
 
 const KATEGORI_META = {
-  ibu_hamil: { label: "Ibu Hamil",  icon: "heart-circle-outline",  warna: "#7a6a4a" },
-  balita:    { label: "Balita",     icon: "happy-outline",         warna: "#4a6a5a" },
+  ibu_hamil: {
+    label: "Ibu Hamil",
+    icon: "heart-circle-outline",
+    warna: "#7a6a4a",
+  },
+  balita: { label: "Balita", icon: "happy-outline", warna: "#4a6a5a" },
 };
 
 const LABEL_SUB = {
   trimester_1: "Trimester 1",
   trimester_2: "Trimester 2",
   trimester_3: "Trimester 3",
-  "0-6_bulan":  "0 – 6 Bulan",
+  "0-6_bulan": "0 – 6 Bulan",
   "7-11_bulan": "7 – 11 Bulan",
-  "1-3_tahun":  "1 – 3 Tahun",
-  "4-6_tahun":  "4 – 6 Tahun",
+  "1-3_tahun": "1 – 3 Tahun",
+  "4-6_tahun": "4 – 6 Tahun",
 };
 
 export default function ArtikelListScreen({ navigation }) {
@@ -36,7 +40,7 @@ export default function ArtikelListScreen({ navigation }) {
   const [refreshing, setRefreshing] = React.useState(false);
 
   const kategori = resolveKategori(profil);
-  const meta     = KATEGORI_META[kategori];
+  const meta = KATEGORI_META[kategori];
 
   const [fontsLoaded] = useFonts({ Inter_400Regular, Inter_700Bold });
   if (!fontsLoaded) return null;
@@ -90,10 +94,22 @@ export default function ArtikelListScreen({ navigation }) {
         </Text>
 
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <Text style={{ fontSize: 11, color: "#8a8a8a", fontFamily: "Inter_400Regular" }}>
+          <Text
+            style={{
+              fontSize: 11,
+              color: "#8a8a8a",
+              fontFamily: "Inter_400Regular",
+            }}
+          >
             {item.sumber}
           </Text>
-          <Text style={{ fontSize: 11, color: "#8a8a8a", fontFamily: "Inter_400Regular" }}>
+          <Text
+            style={{
+              fontSize: 11,
+              color: "#8a8a8a",
+              fontFamily: "Inter_400Regular",
+            }}
+          >
             {item.tanggal}
           </Text>
         </View>
@@ -121,7 +137,7 @@ export default function ArtikelListScreen({ navigation }) {
             {meta && (
               <View
                 style={{
-                  backgroundColor: "#3f4338",
+                  backgroundColor: C.smoke,
                   borderRadius: 18,
                   padding: 16,
                   marginBottom: 16,
@@ -144,10 +160,23 @@ export default function ArtikelListScreen({ navigation }) {
                 </View>
 
                 <View style={{ flex: 1 }}>
-                  <Text style={{ color: "rgba(255,255,255,0.6)", fontSize: 11, fontFamily: "Inter_400Regular", marginBottom: 2 }}>
+                  <Text
+                    style={{
+                      color: "rgba(255,255,255,0.6)",
+                      fontSize: 11,
+                      fontFamily: "Inter_400Regular",
+                      marginBottom: 2,
+                    }}
+                  >
                     Artikel untukmu
                   </Text>
-                  <Text style={{ color: "#fff", fontSize: 15, fontFamily: "Inter_700Bold" }}>
+                  <Text
+                    style={{
+                      color: "#fff",
+                      fontSize: 15,
+                      fontFamily: "Inter_700Bold",
+                    }}
+                  >
                     {meta.label}
                     {profil?.subKategori && LABEL_SUB[profil.subKategori]
                       ? `  ·  ${LABEL_SUB[profil.subKategori]}`
@@ -163,7 +192,13 @@ export default function ArtikelListScreen({ navigation }) {
                     paddingVertical: 4,
                   }}
                 >
-                  <Text style={{ color: "#fff", fontSize: 11, fontFamily: "Inter_400Regular" }}>
+                  <Text
+                    style={{
+                      color: "#fff",
+                      fontSize: 11,
+                      fontFamily: "Inter_400Regular",
+                    }}
+                  >
                     {articles.length} artikel
                   </Text>
                 </View>
@@ -185,8 +220,19 @@ export default function ArtikelListScreen({ navigation }) {
                   gap: 8,
                 }}
               >
-                <Ionicons name="cloud-offline-outline" size={16} color="#a07850" />
-                <Text style={{ fontSize: 12, color: "#7a6040", fontFamily: "Inter_400Regular", flex: 1 }}>
+                <Ionicons
+                  name="cloud-offline-outline"
+                  size={16}
+                  color="#a07850"
+                />
+                <Text
+                  style={{
+                    fontSize: 12,
+                    color: "#7a6040",
+                    fontFamily: "Inter_400Regular",
+                    flex: 1,
+                  }}
+                >
                   {error}
                 </Text>
               </View>
