@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { doc, onSnapshot, setDoc, collection, query, where, getDocs } from "firebase/firestore";
+import { db } from "../../../utils/firebaseConfig";
 import { useAuth } from "../../../context/AuthContext";
 import { getAKG } from "../../../data/akgData";
 import { getRekomendasiMakanan } from "../../../data/nutrisiDatabase";
@@ -17,24 +19,24 @@ export default function useProfile() {
   const { user, logout } = useAuth();
 
   useEffect(() => {
-    if (user) loadProfil();
-  }, [user]);
+    if (!user) { setLoading(false); return; }
 
-  async function loadProfil() {
-    try {
-      const data = await AsyncStorage.getItem(`@nutriscan_profil_${user.uid}`);
-      if (data) {
-        const parsed = JSON.parse(data);
-        // Infer kategori dari subKategori kalau field-nya hilang
+    const unsub = onSnapshot(doc(db, "users", user.uid), async (snap) => {
+      if (snap.exists()) {
+        const parsed = snap.data();
         if (!parsed.kategori) parsed.kategori = resolveKategori(parsed);
         setProfil(parsed);
+
         const akgData = getAKG(parsed.kategori, parsed.subKategori);
         setAkg(akgData);
 
         const today = new Date().toISOString().split("T")[0];
-        const raw = await AsyncStorage.getItem(`@nutriscan_history_${user.uid}`);
-        const history = raw ? JSON.parse(raw) : [];
-        const todayEntries = history.filter((h) => h.tanggal === today);
+        const q = query(
+          collection(db, "users", user.uid, "history"),
+          where("tanggal", "==", today)
+        );
+        const histSnap = await getDocs(q);
+        const todayEntries = histSnap.docs.map((d) => d.data());
         const total = todayEntries.reduce(
           (acc, e) => ({
             kalori: acc.kalori + e.total.kalori,
@@ -54,21 +56,23 @@ export default function useProfile() {
           setRekomendasi(getRekomendasiMakanan(kurang));
         }
       }
-    } finally {
       setLoading(false);
-    }
-  }
+    }, (err) => {
+      console.log("Error load profil:", err);
+      setLoading(false);
+    });
+
+    return unsub;
+  }, [user]);
 
   async function updateProfil(patch) {
     const updated = { ...profil, ...patch };
-    await AsyncStorage.setItem(`@nutriscan_profil_${user.uid}`, JSON.stringify(updated));
+    await setDoc(doc(db, "users", user.uid), updated, { merge: true });
     setProfil(updated);
 
-    // Refresh AKG kalau subKategori berubah
     if (patch.subKategori && patch.subKategori !== profil?.subKategori) {
       const akgBaru = getAKG(updated.kategori, updated.subKategori);
       setAkg(akgBaru);
-      // Hapus cache artikel supaya halaman Info langsung fetch ulang
       await AsyncStorage.removeItem(`@nutriscan_artikel_${updated.kategori ?? "all"}`);
     }
   }

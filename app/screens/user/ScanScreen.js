@@ -5,7 +5,8 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { db } from "../../utils/firebaseConfig";
 import { deteksiMakanan } from "../../utils/geminiHelper";
 import { useAuth } from "../../context/AuthContext";
 import { C } from "../../theme/colors";
@@ -24,18 +25,14 @@ const MANUAL_EMPTY = {
 };
 
 async function simpanHistory(uid, data) {
-  const key = `@nutriscan_history_${uid}`;
-  const raw = await AsyncStorage.getItem(key);
-  const history = raw ? JSON.parse(raw) : [];
   const now = new Date();
-  history.unshift({
-    id: Date.now().toString(),
+  await addDoc(collection(db, "users", uid, "history"), {
     tanggal: now.toISOString().split("T")[0],
     waktu: now.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }),
     makananList: data.makananList,
     total: data.total,
+    createdAt: serverTimestamp(),
   });
-  await AsyncStorage.setItem(key, JSON.stringify(history));
 }
 
 function hitungTotal(list) {

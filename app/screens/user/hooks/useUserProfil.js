@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { doc, onSnapshot } from "firebase/firestore";
+import { db } from "../../../utils/firebaseConfig";
 import { useAuth } from "../../../context/AuthContext";
 import { resolveKategori } from "../../../utils/artikelConfig";
 
@@ -9,13 +10,13 @@ export default function useUserProfil() {
 
   useEffect(() => {
     if (!user) return;
-    AsyncStorage.getItem(`@nutriscan_profil_${user.uid}`).then((raw) => {
-      if (!raw) return;
-      const parsed = JSON.parse(raw);
-      // Infer kategori dari subKategori kalau field-nya hilang di data lama
+    const unsub = onSnapshot(doc(db, "users", user.uid), (snap) => {
+      if (!snap.exists()) return;
+      const parsed = snap.data();
       if (!parsed.kategori) parsed.kategori = resolveKategori(parsed);
       setProfil(parsed);
     });
+    return unsub;
   }, [user]);
 
   return profil;

@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { doc, onSnapshot } from "firebase/firestore";
+import { db } from "../../../utils/firebaseConfig";
 import { useAuth } from "../../../context/AuthContext";
 import {
   getFeedsForKategori, fetchRssItems,
@@ -57,13 +59,14 @@ export default function useArtikel() {
 
   useEffect(() => {
     if (!user) { log("Tidak ada user, skip load profil"); return; }
-    log(`Mulai baca profil AsyncStorage uid=${user.uid}`);
+    log(`Mulai baca profil Firestore uid=${user.uid}`);
     const t0 = Date.now();
-    AsyncStorage.getItem(`@nutriscan_profil_${user.uid}`).then((raw) => {
-      const parsed = raw ? JSON.parse(raw) : null;
+    const unsub = onSnapshot(doc(db, "users", user.uid), (snap) => {
+      const parsed = snap.exists() ? snap.data() : null;
       log(`Profil selesai dibaca (${Date.now() - t0}ms)`, parsed);
       if (parsed) setProfil(parsed);
     });
+    return unsub;
   }, [user]);
 
   const fetchArtikel = useCallback(
