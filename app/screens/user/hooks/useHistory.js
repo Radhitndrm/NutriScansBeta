@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useState, useEffect } from "react";
+import { collection, onSnapshot, deleteDoc, doc, query, orderBy } from "firebase/firestore";
+import { db } from "../../../utils/firebaseConfig";
 import { useAuth } from "../../../context/AuthContext";
 
 export default function useHistory() {
@@ -7,32 +8,28 @@ export default function useHistory() {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const key = user ? `@nutriscan_history_${user.uid}` : null;
-
-  const loadHistory = useCallback(async () => {
-    if (!key) return;
-    try {
-      setLoading(true);
-      const raw = await AsyncStorage.getItem(key);
-      const parsed = raw ? JSON.parse(raw) : [];
-      setHistory(parsed);
-    } catch (err) {
-      console.log("Error load history:", err);
-      setHistory([]);
-    } finally {
-      setLoading(false);
-    }
-  }, [key]);
-
   useEffect(() => {
-    loadHistory();
-  }, [loadHistory]);
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+    const q = query(
+      collection(db, "users", user.uid, "history"),
+      orderBy("createdAt", "desc")
+    );
+    const unsub = onSnapshot(q, (snap) => {
+      setHistory(snap.docs.map((d) => ({ ...d.data(), id: d.id })));
+      setLoading(false);
+    }, (err) => {
+      console.log("Error load history:", err);
+      setLoading(false);
+    });
+    return unsub;
+  }, [user]);
 
   async function hapusEntry(id) {
-    if (!key) return;
-    const baru = history.filter((h) => h.id !== id);
-    setHistory(baru);
-    await AsyncStorage.setItem(key, JSON.stringify(baru));
+    if (!user) return;
+    await deleteDoc(doc(db, "users", user.uid, "history", id));
   }
 
   const grouped = history.reduce((acc, entry) => {
@@ -53,12 +50,7 @@ export default function useHistory() {
         }),
         { kalori: 0, protein: 0, karbohidrat: 0, lemak: 0, serat: 0 }
       );
-
-      return {
-        tanggal,
-        entries,
-        totalHarian,
-      };
+      return { tanggal, entries, totalHarian };
     })
     .sort((a, b) => b.tanggal.localeCompare(a.tanggal));
 
@@ -77,6 +69,6 @@ export default function useHistory() {
     weeklySummary,
     loading,
     hapusEntry,
-    refresh: loadHistory,
+    refresh: () => {},
   };
 }
