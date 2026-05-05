@@ -8,23 +8,24 @@ export async function deteksiMakanan(base64Image) {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: base64Image,
-    }
+    },
   );
 
   const data = await response.json();
 
-  if (data.status === 402) {
-    throw new Error("Kredit AI habis. Hubungi pengembang.");
+  if (data.status === 402 || data.message?.includes("credit")) {
+    throw new Error("Kredit habis. Hubungi pengembang.");
   }
 
-  if (!data.predictions || data.predictions.length === 0) {
+  const predictions = data.predictions ?? [];
+  console.log("Roboflow class names:", predictions.map((p) => p.class));
+
+  if (predictions.length === 0) {
     throw new Error("Tidak ada makanan terdeteksi dalam foto");
   }
 
-  // Hilangkan duplikat class (ambil confidence tertinggi per class)
-  console.log("Roboflow class names:", data.predictions.map(p => p.class));
   const unikClass = {};
-  data.predictions.forEach((pred) => {
+  predictions.forEach((pred) => {
     if (
       !unikClass[pred.class] ||
       pred.confidence > unikClass[pred.class].confidence
@@ -48,7 +49,7 @@ export async function deteksiMakanan(base64Image) {
       lemak: acc.lemak + item.lemak,
       serat: acc.serat + item.serat,
     }),
-    { kalori: 0, protein: 0, karbohidrat: 0, lemak: 0, serat: 0 }
+    { kalori: 0, protein: 0, karbohidrat: 0, lemak: 0, serat: 0 },
   );
 
   return { makananList, total };
