@@ -12,7 +12,7 @@ const NUTRISI_KEYS = ["kalori", "protein", "karbohidrat", "lemak", "serat"];
 export default function useProfile() {
   const [profil, setProfil] = useState(null);
   const [akg, setAkg] = useState(null);
-  const [todayTotal, setTodayTotal] = useState(null);
+  const [todayTotal, setTodayTotal] = useState({ kalori: 0, protein: 0, karbohidrat: 0, lemak: 0, serat: 0 });
   const [rekomendasi, setRekomendasi] = useState([]);
   const [loading, setLoading] = useState(true);
 
