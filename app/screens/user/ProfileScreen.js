@@ -359,16 +359,25 @@ function ModalEditProfil({ visible, profil, onSimpan, onBatal }) {
 
   return (
     <Modal visible={visible} transparent animationType="slide">
-      <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.4)" }} />
-
-      <View
-        style={{
-          backgroundColor: "#EAE7DF",
-          borderTopLeftRadius: 24,
-          borderTopRightRadius: 24,
-          padding: 20,
-        }}
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
+        <TouchableOpacity
+          style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.4)" }}
+          activeOpacity={1}
+          onPress={onBatal}
+        />
+        <ScrollView
+          style={{
+            backgroundColor: "#EAE7DF",
+            borderTopLeftRadius: 24,
+            borderTopRightRadius: 24,
+          }}
+          contentContainerStyle={{ padding: 20 }}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
         <View style={{ alignItems: "center", marginBottom: 20 }}>
           <Text
             style={{
@@ -546,7 +555,8 @@ function ModalEditProfil({ visible, profil, onSimpan, onBatal }) {
             <Text style={{ color: "#fff" }}>Simpan</Text>
           </TouchableOpacity>
         </View>
-      </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }
@@ -556,6 +566,7 @@ export default function ProfileScreen() {
   const { profil, akg, todayTotal, loading, user, logout, updateProfil } =
     useProfile();
   const [showEdit, setShowEdit] = useState(false);
+  const [showLogout, setShowLogout] = useState(false);
 
   if (loading) {
     return (
@@ -737,15 +748,15 @@ export default function ProfileScreen() {
                 key={g.key}
                 label={g.label}
                 satuan={g.satuan}
-                target={akg?.[g.key]}
-                dapat={todayTotal?.[g.key]}
+                target={akg?.[g.key] ?? 0}
+                dapat={todayTotal?.[g.key] ?? 0}
               />
             ))}
           </View>
 
           {/* LOGOUT */}
           <TouchableOpacity
-            onPress={logout}
+            onPress={() => setShowLogout(true)}
             style={{
               marginTop: 30,
               backgroundColor: "#333",
@@ -768,6 +779,35 @@ export default function ProfileScreen() {
           onBatal={() => setShowEdit(false)}
         />
       )}
+
+      {/* Modal Konfirmasi Logout */}
+      <Modal visible={showLogout} transparent animationType="fade">
+        <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.45)", justifyContent: "center", alignItems: "center", paddingHorizontal: 32 }}>
+          <View style={{ backgroundColor: "#EAE7DF", borderRadius: 24, padding: 28, width: "100%", alignItems: "center" }}>
+            <Ionicons name="log-out-outline" size={40} color="#333" style={{ marginBottom: 12 }} />
+            <Text style={{ fontSize: 17, fontWeight: "700", color: "#2E2E2E", marginBottom: 8 }}>
+              Keluar dari Akun?
+            </Text>
+            <Text style={{ fontSize: 13, color: "#777", textAlign: "center", marginBottom: 24 }}>
+              Kamu perlu login kembali untuk menggunakan NutriScan.
+            </Text>
+            <View style={{ flexDirection: "row", gap: 12, width: "100%" }}>
+              <TouchableOpacity
+                onPress={() => setShowLogout(false)}
+                style={{ flex: 1, paddingVertical: 13, backgroundColor: "#D6D3C8", borderRadius: 14, alignItems: "center" }}
+              >
+                <Text style={{ fontWeight: "600", color: "#444" }}>Batal</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => { setShowLogout(false); logout(); }}
+                style={{ flex: 1, paddingVertical: 13, backgroundColor: "#333", borderRadius: 14, alignItems: "center" }}
+              >
+                <Text style={{ fontWeight: "600", color: "#fff" }}>Keluar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }

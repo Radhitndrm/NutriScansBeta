@@ -145,11 +145,192 @@ const nutrisiDatabase = {
     lemak: 10,
     serat: 2,
   },
+
+  // ── Makanan baru (model NutriScan) ──
+  telur_rebus: {
+    nama: "Telur Rebus",
+    porsi: "60 gram (1 butir)",
+    kalori: 77,
+    protein: 6.3,
+    karbohidrat: 0.6,
+    lemak: 5.3,
+    serat: 0,
+  },
+  boiled_egg: {
+    nama: "Telur Rebus",
+    porsi: "60 gram (1 butir)",
+    kalori: 77,
+    protein: 6.3,
+    karbohidrat: 0.6,
+    lemak: 5.3,
+    serat: 0,
+  },
+  boiled_eggs: {
+    nama: "Telur Rebus",
+    porsi: "60 gram (1 butir)",
+    kalori: 77,
+    protein: 6.3,
+    karbohidrat: 0.6,
+    lemak: 5.3,
+    serat: 0,
+  },
+  egg: {
+    nama: "Telur Rebus",
+    porsi: "60 gram (1 butir)",
+    kalori: 77,
+    protein: 6.3,
+    karbohidrat: 0.6,
+    lemak: 5.3,
+    serat: 0,
+  },
+
+  ayam_goreng: {
+    nama: "Ayam Goreng",
+    porsi: "100 gram",
+    kalori: 260,
+    protein: 25,
+    karbohidrat: 3,
+    lemak: 16,
+    serat: 0,
+  },
+  fried_chicken: {
+    nama: "Ayam Goreng",
+    porsi: "100 gram",
+    kalori: 260,
+    protein: 25,
+    karbohidrat: 3,
+    lemak: 16,
+    serat: 0,
+  },
+  chicken: {
+    nama: "Ayam Goreng",
+    porsi: "100 gram",
+    kalori: 260,
+    protein: 25,
+    karbohidrat: 3,
+    lemak: 16,
+    serat: 0,
+  },
+
+  nasi_putih: {
+    nama: "Nasi Putih",
+    porsi: "100 gram",
+    kalori: 175,
+    protein: 3,
+    karbohidrat: 40,
+    lemak: 0.2,
+    serat: 0.3,
+  },
+  white_rice: {
+    nama: "Nasi Putih",
+    porsi: "100 gram",
+    kalori: 175,
+    protein: 3,
+    karbohidrat: 40,
+    lemak: 0.2,
+    serat: 0.3,
+  },
+  nasi: {
+    nama: "Nasi Putih",
+    porsi: "100 gram",
+    kalori: 175,
+    protein: 3,
+    karbohidrat: 40,
+    lemak: 0.2,
+    serat: 0.3,
+  },
+
+  tahu_goreng: {
+    nama: "Tahu Goreng",
+    porsi: "100 gram",
+    kalori: 175,
+    protein: 11,
+    karbohidrat: 4,
+    lemak: 13,
+    serat: 0.3,
+  },
+  fried_tofu: {
+    nama: "Tahu Goreng",
+    porsi: "100 gram",
+    kalori: 175,
+    protein: 11,
+    karbohidrat: 4,
+    lemak: 13,
+    serat: 0.3,
+  },
+  tofu: {
+    nama: "Tahu Goreng",
+    porsi: "100 gram",
+    kalori: 175,
+    protein: 11,
+    karbohidrat: 4,
+    lemak: 13,
+    serat: 0.3,
+  },
+
+  tempe_goreng: {
+    nama: "Tempe Goreng",
+    porsi: "100 gram",
+    kalori: 220,
+    protein: 14,
+    karbohidrat: 13,
+    lemak: 12,
+    serat: 3,
+  },
+  fried_tempeh: {
+    nama: "Tempe Goreng",
+    porsi: "100 gram",
+    kalori: 220,
+    protein: 14,
+    karbohidrat: 13,
+    lemak: 12,
+    serat: 3,
+  },
+  tempeh: {
+    nama: "Tempe Goreng",
+    porsi: "100 gram",
+    kalori: 220,
+    protein: 14,
+    karbohidrat: 13,
+    lemak: 12,
+    serat: 3,
+  },
+
+  // typo di dataset Roboflow
+  brocolli: {
+    nama: "Brokoli",
+    porsi: "100 gram",
+    kalori: 34,
+    protein: 2.8,
+    karbohidrat: 6.6,
+    lemak: 0.4,
+    serat: 2.6,
+  },
+
+  // nama unik pisang dari dataset
+  numwa: {
+    nama: "Pisang",
+    porsi: "120 gram",
+    kalori: 107,
+    protein: 1.3,
+    karbohidrat: 27,
+    lemak: 0.4,
+    serat: 3.1,
+  },
+  smellgood: {
+    nama: "Pisang",
+    porsi: "120 gram",
+    kalori: 107,
+    protein: 1.3,
+    karbohidrat: 27,
+    lemak: 0.4,
+    serat: 3.1,
+  },
 };
 
 // Cari nutrisi berdasarkan nama class dari Roboflow
 export function getNutrisi(classNama) {
-  const key = classNama.toLowerCase().replace(" ", "_");
+  const key = classNama.toLowerCase().replace(/[\s-]+/g, "_");
   return (
     nutrisiDatabase[key] || {
       nama: classNama,
