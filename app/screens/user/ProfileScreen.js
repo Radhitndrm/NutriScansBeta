@@ -14,9 +14,17 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
+import { LinearGradient } from "expo-linear-gradient";
 import { C } from "../../theme/colors";
 import useProfile from "./hooks/useProfile";
-import { LinearGradient } from "expo-linear-gradient";
+
+const NUTRISI_COLORS = {
+  kalori: "#E8935A",
+  protein: "#5A8BE8",
+  karbohidrat: "#5ABF8E",
+  lemak: "#BF7A5A",
+  serat: "#8A8E5A",
+};
 
 const LABEL_SUB = {
   trimester_1: "Trimester 1",
@@ -54,33 +62,45 @@ function persen(dapat, target) {
   return Math.min(Math.round((dapat / target) * 100), 100);
 }
 
-function BarGizi({ label, satuan, target, dapat }) {
+/* ── Progress bar per nutrisi ── */
+function BarGizi({ label, satuan, target, dapat, colorKey }) {
   const p = persen(dapat, target);
-  const warnaTeks = p >= 80 ? "#4a7a4a" : p >= 50 ? "#8a7040" : "#8a4040";
+  const color = NUTRISI_COLORS[colorKey] ?? C.smoke;
+  const statusColor = p >= 80 ? "#4a7a4a" : p >= 50 ? "#8a7040" : "#8a4040";
+
   return (
-    <View style={{ marginBottom: 16 }}>
+    <View style={{ marginBottom: 14 }}>
       <View
         style={{
           flexDirection: "row",
           justifyContent: "space-between",
+          alignItems: "center",
           marginBottom: 6,
         }}
       >
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+          <View
+            style={{
+              width: 8,
+              height: 8,
+              borderRadius: 4,
+              backgroundColor: color,
+            }}
+          />
+          <Text
+            style={{
+              color: C.smoke,
+              fontSize: 13,
+              fontFamily: "Inter_600SemiBold",
+            }}
+          >
+            {label}
+          </Text>
+        </View>
         <Text
           style={{
-            color: C.smoke,
-            fontWeight: "600",
-            fontSize: 13,
-            fontFamily: "Inter_600SemiBold",
-          }}
-        >
-          {label}
-        </Text>
-        <Text
-          style={{
-            color: C.smoke,
-            opacity: 0.6,
-            fontSize: 13,
+            color: C.placeholder,
+            fontSize: 12,
             fontFamily: "Inter_400Regular",
           }}
         >
@@ -90,15 +110,14 @@ function BarGizi({ label, satuan, target, dapat }) {
         </Text>
       </View>
       <View
-        style={{ backgroundColor: C.cardDark, borderRadius: 99, height: 10 }}
+        style={{ backgroundColor: C.cardDark, borderRadius: 99, height: 8 }}
       >
         <View
           style={{
-            backgroundColor: C.smoke,
+            backgroundColor: color,
             borderRadius: 99,
-            height: 10,
+            height: 8,
             width: `${p}%`,
-            opacity: 0.7 + (p / 100) * 0.3,
           }}
         />
       </View>
@@ -106,8 +125,8 @@ function BarGizi({ label, satuan, target, dapat }) {
         <Text
           style={{
             fontSize: 11,
-            marginTop: 4,
-            color: warnaTeks,
+            marginTop: 3,
+            color: statusColor,
             fontFamily: "Inter_400Regular",
           }}
         >
@@ -118,31 +137,71 @@ function BarGizi({ label, satuan, target, dapat }) {
   );
 }
 
-function InfoBaris({ label, nilai }) {
+/* ── Baris info profil ── */
+function InfoBaris({ label, nilai, last }) {
   return (
     <View
       style={{
         flexDirection: "row",
         justifyContent: "space-between",
+        alignItems: "center",
         paddingVertical: 14,
         paddingHorizontal: 16,
-        borderBottomWidth: 1,
+        borderBottomWidth: last ? 0 : 1,
         borderBottomColor: C.cardDark,
       }}
     >
       <Text
-        style={{ color: C.smoke, opacity: 0.6, fontFamily: "Inter_400Regular" }}
+        style={{
+          color: C.placeholder,
+          fontFamily: "Inter_400Regular",
+          fontSize: 14,
+        }}
       >
         {label}
       </Text>
       <Text
         style={{
           color: C.smoke,
-          fontWeight: "600",
           fontFamily: "Inter_600SemiBold",
+          fontSize: 14,
         }}
       >
         {nilai}
+      </Text>
+    </View>
+  );
+}
+
+/* ── Label section ── */
+function SectionLabel({ text }) {
+  return (
+    <View
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 6,
+        marginBottom: 10,
+      }}
+    >
+      <View
+        style={{
+          width: 8,
+          height: 8,
+          borderRadius: 4,
+          backgroundColor: NUTRISI_COLORS.karbohidrat,
+        }}
+      />
+      <Text
+        style={{
+          color: C.placeholder,
+          fontSize: 11,
+          fontFamily: "Inter_600SemiBold",
+          textTransform: "uppercase",
+          letterSpacing: 0.5,
+        }}
+      >
+        {text}
       </Text>
     </View>
   );
@@ -191,15 +250,14 @@ function ModalGantiSubKategori({ visible, profil, onSimpan, onBatal }) {
             color: C.smoke,
             fontFamily: "Inter_700Bold",
             fontSize: 18,
-            marginBottom: 6,
+            marginBottom: 4,
           }}
         >
           Ganti Sub Kategori
         </Text>
         <Text
           style={{
-            color: C.smoke,
-            opacity: 0.55,
+            color: C.placeholder,
             fontSize: 13,
             fontFamily: "Inter_400Regular",
             marginBottom: 20,
@@ -220,9 +278,7 @@ function ModalGantiSubKategori({ visible, profil, onSimpan, onBatal }) {
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "center",
-                backgroundColor: selected ? C.selectedBg : C.inputBg,
-                borderWidth: 2,
-                borderColor: selected ? C.smoke : "transparent",
+                backgroundColor: selected ? C.smoke : C.card,
                 borderRadius: 14,
                 paddingHorizontal: 16,
                 paddingVertical: 14,
@@ -231,28 +287,33 @@ function ModalGantiSubKategori({ visible, profil, onSimpan, onBatal }) {
             >
               <Text
                 style={{
-                  color: C.smoke,
+                  color: selected ? C.white : C.smoke,
                   fontFamily: "Inter_600SemiBold",
                   fontSize: 14,
                 }}
               >
                 {item.label}
               </Text>
-              {item.sub && (
-                <Text
-                  style={{
-                    color: C.smoke,
-                    opacity: 0.55,
-                    fontSize: 13,
-                    fontFamily: "Inter_400Regular",
-                  }}
-                >
-                  {item.sub}
-                </Text>
-              )}
-              {selected && (
-                <Ionicons name="checkmark-circle" size={20} color={C.smoke} />
-              )}
+              <View
+                style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
+              >
+                {item.sub && (
+                  <Text
+                    style={{
+                      color: selected
+                        ? "rgba(255,255,255,0.65)"
+                        : C.placeholder,
+                      fontSize: 13,
+                      fontFamily: "Inter_400Regular",
+                    }}
+                  >
+                    {item.sub}
+                  </Text>
+                )}
+                {selected && (
+                  <Ionicons name="checkmark-circle" size={20} color={C.white} />
+                )}
+              </View>
             </TouchableOpacity>
           );
         })}
@@ -293,14 +354,35 @@ function ModalGantiSubKategori({ visible, profil, onSimpan, onBatal }) {
   );
 }
 
+/* ── Input field helper ── */
+function FormField({ label, children }) {
+  return (
+    <View style={{ marginBottom: 14 }}>
+      <Text
+        style={{
+          color: "rgba(255,255,255,0.6)",
+          fontSize: 11,
+          fontFamily: "Inter_600SemiBold",
+          textTransform: "uppercase",
+          letterSpacing: 0.5,
+          marginBottom: 6,
+        }}
+      >
+        {label}
+      </Text>
+      {children}
+    </View>
+  );
+}
+
 /* ── Modal Edit Profil ── */
 function ModalEditProfil({ visible, profil, onSimpan, onBatal }) {
   const [username, setUsername] = useState(profil?.username ?? "");
   const [fotoUri, setFotoUri] = useState(profil?.fotoUri ?? null);
-  const [kategori, setKategori] = useState(profil?.kategori ?? "ibu_hamil");
   const [subKategori, setSubKategori] = useState(profil?.subKategori ?? null);
   const [namaAnak, setNamaAnak] = useState(profil?.namaAnak ?? "");
 
+  const kategori = profil?.kategori ?? "ibu_hamil";
   const opsiSub = kategori === "ibu_hamil" ? TRIMESTER : USIA_BALITA;
 
   async function pilihFoto() {
@@ -309,17 +391,13 @@ function ModalEditProfil({ visible, profil, onSimpan, onBatal }) {
       Alert.alert("Izin Ditolak", "Butuh akses galeri");
       return;
     }
-
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
       quality: 0.7,
     });
-
-    if (!result.canceled) {
-      setFotoUri(result.assets[0].uri);
-    }
+    if (!result.canceled) setFotoUri(result.assets[0].uri);
   }
 
   async function ambilFoto() {
@@ -328,16 +406,12 @@ function ModalEditProfil({ visible, profil, onSimpan, onBatal }) {
       Alert.alert("Izin Ditolak", "Butuh akses kamera");
       return;
     }
-
     const result = await ImagePicker.launchCameraAsync({
       allowsEditing: true,
       aspect: [1, 1],
       quality: 0.7,
     });
-
-    if (!result.canceled) {
-      setFotoUri(result.assets[0].uri);
-    }
+    if (!result.canceled) setFotoUri(result.assets[0].uri);
   }
 
   function pilihSumber() {
@@ -348,14 +422,15 @@ function ModalEditProfil({ visible, profil, onSimpan, onBatal }) {
     ]);
   }
 
-  function pilihKategori(val) {
-    setKategori(val);
-    setSubKategori(null);
-
-    if (val === "ibu_hamil") {
-      setNamaAnak(""); // reset biar ga kebawa
-    }
-  }
+  const inputStyle = {
+    backgroundColor: "rgba(255,255,255,0.1)",
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    color: C.white,
+    fontSize: 14,
+    fontFamily: "Inter_400Regular",
+  };
 
   return (
     <Modal visible={visible} transparent animationType="slide">
@@ -368,200 +443,241 @@ function ModalEditProfil({ visible, profil, onSimpan, onBatal }) {
           activeOpacity={1}
           onPress={onBatal}
         />
-        <ScrollView
-          style={{
-            backgroundColor: "#EAE7DF",
-            borderTopLeftRadius: 24,
-            borderTopRightRadius: 24,
-          }}
-          contentContainerStyle={{ padding: 20 }}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
+        <LinearGradient
+          colors={[C.smoke, "#2d3028"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={{ borderTopLeftRadius: 28, borderTopRightRadius: 28 }}
         >
-        <View style={{ alignItems: "center", marginBottom: 20 }}>
-          <Text
-            style={{
-              fontSize: 16,
-              fontWeight: "600",
-              marginBottom: 14,
-              textAlign: "center",
+          <ScrollView
+            contentContainerStyle={{
+              paddingHorizontal: 24,
+              paddingTop: 16,
+              paddingBottom: 48,
             }}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
           >
-            Edit Profil
-          </Text>
-
-          <TouchableOpacity onPress={pilihSumber} activeOpacity={0.8}>
-            <View style={{ position: "relative" }}>
-              {fotoUri ? (
-                <Image
-                  source={{ uri: fotoUri }}
-                  style={{
-                    width: 80,
-                    height: 80,
-                    borderRadius: 40,
-                  }}
-                />
-              ) : (
-                <View
-                  style={{
-                    width: 80,
-                    height: 80,
-                    borderRadius: 40,
-                    backgroundColor: "#ccc",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Ionicons name="person" size={30} color="#333" />
-                </View>
-              )}
-
-              {/* icon kecil */}
-              <View
-                style={{
-                  position: "absolute",
-                  bottom: 0,
-                  right: 0,
-                  width: 26,
-                  height: 26,
-                  borderRadius: 13,
-                  backgroundColor: "#333",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  borderWidth: 2,
-                  borderColor: "#EAE7DF",
-                }}
-              >
-                <Ionicons name="camera" size={14} color="#fff" />
-              </View>
-            </View>
-          </TouchableOpacity>
-        </View>
-
-        {/* NAMA */}
-        <Text>Nama</Text>
-        <TextInput
-          value={username}
-          onChangeText={setUsername}
-          style={{
-            backgroundColor: "#fff",
-            borderRadius: 10,
-            padding: 12,
-            marginBottom: 14,
-          }}
-        />
-
-        {/* KATEGORI */}
-        <Text>Kategori</Text>
-        <View style={{ flexDirection: "row", marginBottom: 14 }}>
-          {["ibu_hamil", "balita"].map((k) => (
-            <TouchableOpacity
-              key={k}
-              onPress={() => pilihKategori(k)}
+            {/* Handle bar */}
+            <View
               style={{
-                flex: 1,
-                padding: 12,
-                marginRight: 6,
-                backgroundColor: kategori === k ? "#333" : "#D6D3C8",
-                borderRadius: 10,
-                alignItems: "center",
-              }}
-            >
-              <Text
-                style={{
-                  color: kategori === k ? "#fff" : "#333",
-                }}
-              >
-                {k === "ibu_hamil" ? "Ibu Hamil" : "Balita"}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-
-        {/* SUB */}
-        <Text>Sub Kategori</Text>
-        {opsiSub.map((item) => (
-          <TouchableOpacity
-            key={item.id}
-            onPress={() => setSubKategori(item.id)}
-            style={{
-              padding: 12,
-              backgroundColor: subKategori === item.id ? "#333" : "#fff",
-              borderRadius: 10,
-              marginBottom: 8,
-            }}
-          >
-            <Text
-              style={{
-                color: subKategori === item.id ? "#fff" : "#333",
-              }}
-            >
-              {item.label}
-            </Text>
-          </TouchableOpacity>
-        ))}
-
-        {/* NAMA ANAK (hanya balita) */}
-        {kategori === "balita" && (
-          <>
-            <Text>Nama Anak</Text>
-            <TextInput
-              value={namaAnak}
-              onChangeText={setNamaAnak}
-              style={{
-                backgroundColor: "#fff",
-                borderRadius: 10,
-                padding: 12,
-                marginTop: 6,
-                marginBottom: 14,
+                width: 40,
+                height: 4,
+                backgroundColor: "rgba(255,255,255,0.2)",
+                borderRadius: 2,
+                alignSelf: "center",
+                marginBottom: 20,
               }}
             />
-          </>
-        )}
 
-        {/* BUTTON */}
-        <View style={{ flexDirection: "row", gap: 10 }}>
-          <TouchableOpacity
-            onPress={onBatal}
-            style={{
-              flex: 1,
-              padding: 14,
-              backgroundColor: "#ccc",
-              borderRadius: 10,
-              alignItems: "center",
-            }}
-          >
-            <Text>Batal</Text>
-          </TouchableOpacity>
+            {/* Title */}
+            <Text
+              style={{
+                color: C.white,
+                fontFamily: "Inter_700Bold",
+                fontSize: 18,
+                marginBottom: 24,
+                textAlign: "center",
+              }}
+            >
+              Edit Profil
+            </Text>
 
-          <TouchableOpacity
-            onPress={() =>
-              onSimpan({
-                username,
-                fotoUri,
-                kategori,
-                subKategori,
-                namaAnak: kategori === "balita" ? namaAnak : null,
-              })
-            }
-            style={{
-              flex: 2,
-              padding: 14,
-              backgroundColor: "#333",
-              borderRadius: 10,
-              alignItems: "center",
-            }}
-          >
-            <Text style={{ color: "#fff" }}>Simpan</Text>
-          </TouchableOpacity>
-        </View>
-        </ScrollView>
+            {/* Avatar */}
+            <TouchableOpacity
+              onPress={pilihSumber}
+              activeOpacity={0.8}
+              style={{ alignItems: "center", marginBottom: 24 }}
+            >
+              <View style={{ position: "relative" }}>
+                {fotoUri ? (
+                  <Image
+                    source={{ uri: fotoUri }}
+                    style={{
+                      width: 90,
+                      height: 90,
+                      borderRadius: 45,
+                      borderWidth: 3,
+                      borderColor: "rgba(255,255,255,0.3)",
+                    }}
+                  />
+                ) : (
+                  <View
+                    style={{
+                      width: 90,
+                      height: 90,
+                      borderRadius: 45,
+                      backgroundColor: "rgba(255,255,255,0.15)",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      borderWidth: 3,
+                      borderColor: "rgba(255,255,255,0.2)",
+                    }}
+                  >
+                    <Ionicons
+                      name="person"
+                      size={38}
+                      color="rgba(255,255,255,0.7)"
+                    />
+                  </View>
+                )}
+                <View
+                  style={{
+                    position: "absolute",
+                    bottom: 0,
+                    right: 0,
+                    width: 28,
+                    height: 28,
+                    borderRadius: 14,
+                    backgroundColor: C.white,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderWidth: 2,
+                    borderColor: C.smoke,
+                  }}
+                >
+                  <Ionicons name="camera" size={14} color={C.smoke} />
+                </View>
+              </View>
+              <Text
+                style={{
+                  color: "rgba(255,255,255,0.55)",
+                  fontSize: 12,
+                  fontFamily: "Inter_400Regular",
+                  marginTop: 8,
+                }}
+              >
+                Ketuk untuk ganti foto
+              </Text>
+            </TouchableOpacity>
+
+            {/* Nama */}
+            <FormField label="Nama">
+              <TextInput
+                value={username}
+                onChangeText={setUsername}
+                placeholder="Masukkan nama"
+                placeholderTextColor="rgba(255,255,255,0.35)"
+                style={inputStyle}
+              />
+            </FormField>
+
+            {/* Sub Kategori */}
+            <FormField label="Sub Kategori">
+              <View style={{ gap: 8 }}>
+                {opsiSub.map((item) => {
+                  const selected = subKategori === item.id;
+                  return (
+                    <TouchableOpacity
+                      key={item.id}
+                      onPress={() => setSubKategori(item.id)}
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        padding: 12,
+                        borderRadius: 10,
+                        backgroundColor: selected
+                          ? C.white
+                          : "rgba(255,255,255,0.08)",
+                      }}
+                    >
+                      <Text
+                        style={{
+                          color: selected ? C.smoke : "rgba(255,255,255,0.75)",
+                          fontFamily: selected
+                            ? "Inter_600SemiBold"
+                            : "Inter_400Regular",
+                          fontSize: 14,
+                        }}
+                      >
+                        {item.label}
+                      </Text>
+                      {item.sub && (
+                        <Text
+                          style={{
+                            color: selected
+                              ? C.placeholder
+                              : "rgba(255,255,255,0.4)",
+                            fontSize: 12,
+                            fontFamily: "Inter_400Regular",
+                          }}
+                        >
+                          {item.sub}
+                        </Text>
+                      )}
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            </FormField>
+
+            {/* Nama Anak */}
+            {kategori === "balita" && (
+              <FormField label="Nama Anak">
+                <TextInput
+                  value={namaAnak}
+                  onChangeText={setNamaAnak}
+                  placeholder="Nama anak"
+                  placeholderTextColor="rgba(255,255,255,0.35)"
+                  style={inputStyle}
+                />
+              </FormField>
+            )}
+
+            {/* Buttons */}
+            <View style={{ flexDirection: "row", gap: 10, marginTop: 8 }}>
+              <TouchableOpacity
+                onPress={onBatal}
+                style={{
+                  flex: 1,
+                  paddingVertical: 14,
+                  backgroundColor: "rgba(255,255,255,0.1)",
+                  borderRadius: 14,
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    color: "rgba(255,255,255,0.75)",
+                    fontFamily: "Inter_600SemiBold",
+                  }}
+                >
+                  Batal
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() =>
+                  onSimpan({
+                    username,
+                    fotoUri,
+                    subKategori,
+                    namaAnak: kategori === "balita" ? namaAnak : null,
+                  })
+                }
+                style={{
+                  flex: 2,
+                  paddingVertical: 14,
+                  backgroundColor: C.white,
+                  borderRadius: 14,
+                  alignItems: "center",
+                }}
+              >
+                <Text style={{ color: C.smoke, fontFamily: "Inter_700Bold" }}>
+                  Simpan
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+        </LinearGradient>
       </KeyboardAvoidingView>
     </Modal>
   );
 }
 
-/* ── Screen utama ── */
+/* ══════════════════════════════
+   SCREEN UTAMA
+══════════════════════════════ */
 export default function ProfileScreen() {
   const { profil, akg, todayTotal, loading, user, logout, updateProfil } =
     useProfile();
@@ -600,177 +716,272 @@ export default function ProfileScreen() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#EAE7DF" }}>
-      <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
-        {/* HEADER */}
+    <View style={{ flex: 1, backgroundColor: C.skyWarm }}>
+      <ScrollView
+        contentContainerStyle={{ paddingBottom: 48 }}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* ── HERO SECTION ── */}
         <LinearGradient
           colors={["#5d6256", "#AAB0A3"]}
           start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 1 }}
-          style={{
-            paddingTop: 20,
-            paddingHorizontal: 20,
-            paddingBottom: 20,
-          }}
+          end={{ x: 1, y: 1 }}
+          style={{ paddingHorizontal: 24, paddingTop: 24, paddingBottom: 32 }}
         >
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            {/* Avatar */}
+          {/* Avatar + edit button */}
+          <View style={{ alignItems: "center", marginBottom: 16 }}>
+            <View style={{ position: "relative" }}>
+              <View
+                style={{
+                  width: 90,
+                  height: 90,
+                  borderRadius: 45,
+                  borderWidth: 3,
+                  borderColor: "rgba(255,255,255,0.25)",
+                  overflow: "hidden",
+                  backgroundColor: "rgba(255,255,255,0.15)",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                {profil?.fotoUri ? (
+                  <Image
+                    source={{ uri: profil.fotoUri }}
+                    style={{ width: 90, height: 90 }}
+                  />
+                ) : (
+                  <Ionicons
+                    name="person"
+                    size={40}
+                    color="rgba(255,255,255,0.7)"
+                  />
+                )}
+              </View>
+              <TouchableOpacity
+                onPress={() => setShowEdit(true)}
+                style={{
+                  position: "absolute",
+                  bottom: 0,
+                  right: 0,
+                  width: 28,
+                  height: 28,
+                  borderRadius: 14,
+                  backgroundColor: C.white,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderWidth: 2,
+                  borderColor: C.smoke,
+                }}
+              >
+                <Ionicons name="pencil" size={13} color={C.smoke} />
+              </TouchableOpacity>
+            </View>
+
+            {/* Nama */}
+            <Text
+              style={{
+                color: C.white,
+                fontSize: 20,
+                fontFamily: "Inter_700Bold",
+                marginTop: 12,
+              }}
+            >
+              {profil?.username || "Pengguna"}
+            </Text>
+
+            {/* Kategori badge */}
             <View
               style={{
-                width: 60,
-                height: 60,
-                borderRadius: 30,
-                backgroundColor: "#AAB0A3",
-                justifyContent: "center",
+                flexDirection: "row",
+                gap: 8,
+                marginTop: 6,
                 alignItems: "center",
               }}
             >
-              {profil?.fotoUri ? (
-                <Image
-                  source={{ uri: profil.fotoUri }}
-                  style={{ width: 60, height: 60, borderRadius: 30 }}
-                />
-              ) : (
-                <Ionicons name="person" size={28} color="#333" />
-              )}
+              <View
+                style={{
+                  backgroundColor: "rgba(255,255,255,0.15)",
+                  paddingHorizontal: 12,
+                  paddingVertical: 4,
+                  borderRadius: 20,
+                }}
+              >
+                <Text
+                  style={{
+                    color: C.white,
+                    fontSize: 12,
+                    fontFamily: "Inter_600SemiBold",
+                  }}
+                >
+                  {labelKategori}
+                  {profil?.subKategori && LABEL_SUB[profil.subKategori]
+                    ? `  ·  ${LABEL_SUB[profil.subKategori]}`
+                    : ""}
+                </Text>
+              </View>
             </View>
 
-            {/* CARD INFO */}
-            <View
+            {/* Email */}
+            <Text
               style={{
-                marginLeft: 12,
-                backgroundColor: "#C1C3BD",
-                paddingHorizontal: 12,
-                paddingVertical: 8,
-                borderRadius: 12,
-                flex: 1,
+                color: "rgba(255,255,255,0.5)",
+                fontSize: 12,
+                fontFamily: "Inter_400Regular",
+                marginTop: 6,
               }}
             >
-              <Text style={{ fontSize: 11, color: "#444", marginBottom: 2 }}>
-                {isIbuHamil ? "Ibu Hamil" : "Balita"}
-              </Text>
+              {user?.email}
+            </Text>
+          </View>
 
-              <Text
+          {/* Quick stats */}
+          <View style={{ flexDirection: "row", gap: 10 }}>
+            {[
+              {
+                label: "Kalori Hari Ini",
+                val: `${Math.round(todayTotal?.kalori ?? 0)} kkal`,
+                color: NUTRISI_COLORS.kalori,
+              },
+              {
+                label: "Target Kalori",
+                val: `${akg?.kalori ?? "–"} kkal`,
+                color: NUTRISI_COLORS.protein,
+              },
+            ].map(({ label, val, color }) => (
+              <View
+                key={label}
                 style={{
-                  fontSize: 15,
-                  fontWeight: "600",
-                  color: "#2E2E2E",
+                  flex: 1,
+                  backgroundColor: "rgba(255,255,255,0.1)",
+                  borderRadius: 14,
+                  padding: 12,
+                  borderTopWidth: 2,
+                  borderTopColor: color,
                 }}
-                numberOfLines={1}
               >
-                {profil?.username || user?.email}
-              </Text>
-            </View>
-
-            {/* Edit */}
-            <TouchableOpacity
-              onPress={() => setShowEdit(true)}
-              style={{ marginLeft: 10 }}
-            >
-              <Ionicons name="create-outline" size={18} color="#CCCABD" />
-            </TouchableOpacity>
+                <Text
+                  style={{
+                    color: "rgba(255,255,255,0.55)",
+                    fontSize: 11,
+                    fontFamily: "Inter_400Regular",
+                    marginBottom: 4,
+                  }}
+                >
+                  {label}
+                </Text>
+                <Text
+                  style={{
+                    color: C.white,
+                    fontSize: 14,
+                    fontFamily: "Inter_700Bold",
+                  }}
+                >
+                  {val}
+                </Text>
+              </View>
+            ))}
           </View>
         </LinearGradient>
 
-        {/* CONTENT */}
-        <View style={{ padding: 20 }}>
-          {/* DATA PROFIL */}
-          <Text
-            style={{
-              backgroundColor: "#D6D3C8",
-              alignSelf: "flex-start",
-              paddingHorizontal: 12,
-              paddingVertical: 4,
-              borderRadius: 10,
-              marginBottom: 10,
-              fontSize: 12,
-            }}
-          >
-            Data Profil
-          </Text>
-
-          <View
-            style={{
-              backgroundColor: "#fff",
-              borderRadius: 12,
-              overflow: "hidden",
-              marginBottom: 20,
-            }}
-          >
-            <InfoBaris label="Kategori" nilai={labelKategori} />
-
-            <InfoBaris
-              label="Sub Kategori"
-              nilai={LABEL_SUB[profil?.subKategori] || akg?.label || "-"}
-            />
-
-            {profil?.kategori === "balita" && (
-              <InfoBaris label="Nama Anak" nilai={profil?.namaAnak || "-"} />
-            )}
-
-            <InfoBaris label="Email" nilai={user?.email} />
-          </View>
-
-          {/* GIZI */}
-          <Text
-            style={{
-              backgroundColor: "#D6D3C8",
-              alignSelf: "flex-start",
-              paddingHorizontal: 12,
-              paddingVertical: 4,
-              borderRadius: 10,
-              marginBottom: 10,
-              fontSize: 12,
-            }}
-          >
-            Pemenuhan Gizi Hari Ini
-          </Text>
-
-          <View
-            style={{
-              backgroundColor: "#fff",
-              borderRadius: 16,
-              padding: 16,
-            }}
-          >
-            <Text
+        {/* ── CONTENT ── */}
+        <View style={{ padding: 20, gap: 20 }}>
+          {/* Data Profil */}
+          <View>
+            <SectionLabel text="Informasi Profil" />
+            <View
               style={{
-                fontSize: 11,
-                color: "#777",
-                marginBottom: 12,
+                backgroundColor: C.white,
+                borderRadius: 16,
+                overflow: "hidden",
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.06,
+                shadowRadius: 6,
+                elevation: 2,
               }}
             >
-              Berdasarkan AKG Kemenkes 2019 · {akg?.label}
-            </Text>
-
-            {GIZI.map((g) => (
-              <BarGizi
-                key={g.key}
-                label={g.label}
-                satuan={g.satuan}
-                target={akg?.[g.key] ?? 0}
-                dapat={todayTotal?.[g.key] ?? 0}
+              <InfoBaris label="Kategori" nilai={labelKategori} />
+              <InfoBaris
+                label="Sub Kategori"
+                nilai={LABEL_SUB[profil?.subKategori] || akg?.label || "-"}
               />
-            ))}
+              {profil?.kategori === "balita" && (
+                <InfoBaris
+                  label="Nama Balita"
+                  nilai={profil?.namaAnak || "-"}
+                />
+              )}
+              <InfoBaris label="Email" nilai={user?.email} last />
+            </View>
           </View>
 
-          {/* LOGOUT */}
+          {/* Gizi Hari Ini */}
+          <View>
+            <SectionLabel text="Pemenuhan Gizi Hari Ini" />
+            <View
+              style={{
+                backgroundColor: C.white,
+                borderRadius: 16,
+                padding: 18,
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.06,
+                shadowRadius: 6,
+                elevation: 2,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 11,
+                  color: C.placeholder,
+                  marginBottom: 16,
+                  fontFamily: "Inter_400Regular",
+                }}
+              >
+                Berdasarkan AKG Kemenkes 2019 · {akg?.label}
+              </Text>
+              {GIZI.map((g) => (
+                <BarGizi
+                  key={g.key}
+                  colorKey={g.key}
+                  label={g.label}
+                  satuan={g.satuan}
+                  target={akg?.[g.key] ?? 0}
+                  dapat={todayTotal?.[g.key] ?? 0}
+                />
+              ))}
+            </View>
+          </View>
+
+          {/* Logout */}
           <TouchableOpacity
             onPress={() => setShowLogout(true)}
+            activeOpacity={0.85}
             style={{
-              marginTop: 30,
-              backgroundColor: "#333",
-              borderRadius: 30,
-              paddingVertical: 14,
+              backgroundColor: C.smoke,
+              borderRadius: 16,
+              paddingVertical: 15,
+              flexDirection: "row",
               alignItems: "center",
+              justifyContent: "center",
+              gap: 8,
             }}
           >
-            <Text style={{ color: "#fff", fontWeight: "600" }}>Keluar</Text>
+            <Ionicons name="log-out-outline" size={18} color={C.white} />
+            <Text
+              style={{
+                color: C.white,
+                fontFamily: "Inter_600SemiBold",
+                fontSize: 14,
+              }}
+            >
+              Keluar dari Akun
+            </Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
 
-      {/* MODALS */}
+      {/* Modal Edit */}
       {showEdit && (
         <ModalEditProfil
           visible={showEdit}
@@ -782,27 +993,93 @@ export default function ProfileScreen() {
 
       {/* Modal Konfirmasi Logout */}
       <Modal visible={showLogout} transparent animationType="fade">
-        <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.45)", justifyContent: "center", alignItems: "center", paddingHorizontal: 32 }}>
-          <View style={{ backgroundColor: "#EAE7DF", borderRadius: 24, padding: 28, width: "100%", alignItems: "center" }}>
-            <Ionicons name="log-out-outline" size={40} color="#333" style={{ marginBottom: 12 }} />
-            <Text style={{ fontSize: 17, fontWeight: "700", color: "#2E2E2E", marginBottom: 8 }}>
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: "rgba(0,0,0,0.45)",
+            justifyContent: "center",
+            alignItems: "center",
+            paddingHorizontal: 32,
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: C.card,
+              borderRadius: 24,
+              padding: 28,
+              width: "100%",
+              alignItems: "center",
+            }}
+          >
+            <View
+              style={{
+                width: 56,
+                height: 56,
+                borderRadius: 28,
+                backgroundColor: C.smoke,
+                alignItems: "center",
+                justifyContent: "center",
+                marginBottom: 14,
+              }}
+            >
+              <Ionicons name="log-out-outline" size={28} color={C.skyWarm} />
+            </View>
+            <Text
+              style={{
+                fontSize: 17,
+                fontFamily: "Inter_700Bold",
+                color: C.smoke,
+                marginBottom: 8,
+              }}
+            >
               Keluar dari Akun?
             </Text>
-            <Text style={{ fontSize: 13, color: "#777", textAlign: "center", marginBottom: 24 }}>
+            <Text
+              style={{
+                fontSize: 13,
+                color: C.placeholder,
+                textAlign: "center",
+                marginBottom: 24,
+                fontFamily: "Inter_400Regular",
+              }}
+            >
               Kamu perlu login kembali untuk menggunakan NutriScan.
             </Text>
             <View style={{ flexDirection: "row", gap: 12, width: "100%" }}>
               <TouchableOpacity
                 onPress={() => setShowLogout(false)}
-                style={{ flex: 1, paddingVertical: 13, backgroundColor: "#D6D3C8", borderRadius: 14, alignItems: "center" }}
+                style={{
+                  flex: 1,
+                  paddingVertical: 13,
+                  backgroundColor: C.skyWarm,
+                  borderRadius: 14,
+                  alignItems: "center",
+                }}
               >
-                <Text style={{ fontWeight: "600", color: "#444" }}>Batal</Text>
+                <Text
+                  style={{ fontFamily: "Inter_600SemiBold", color: C.smoke }}
+                >
+                  Batal
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => { setShowLogout(false); logout(); }}
-                style={{ flex: 1, paddingVertical: 13, backgroundColor: "#333", borderRadius: 14, alignItems: "center" }}
+                onPress={() => {
+                  setShowLogout(false);
+                  logout();
+                }}
+                style={{
+                  flex: 1,
+                  paddingVertical: 13,
+                  backgroundColor: C.smoke,
+                  borderRadius: 14,
+                  alignItems: "center",
+                }}
               >
-                <Text style={{ fontWeight: "600", color: "#fff" }}>Keluar</Text>
+                <Text
+                  style={{ fontFamily: "Inter_600SemiBold", color: C.white }}
+                >
+                  Keluar
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
