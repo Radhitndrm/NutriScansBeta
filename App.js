@@ -45,7 +45,7 @@ const Stack = createNativeStackNavigator();
 const HEADER_OPTS = {
   headerStyle: { backgroundColor: C.smoke },
   headerTintColor: C.skyWarm,
-  headerTitleStyle: { fontWeight: "bold", fontFamily: "Inter_700Bold" },
+  headerTitleStyle: { fontWeight: "bold", fontFamily: "Inter_700Bold", fontSize: 17 },
 };
 
 const TAB_ROUTES = {
@@ -142,12 +142,12 @@ function InfoStack() {
       <Stack.Screen
         name="ArtikelList"
         component={ArtikelListScreen}
-        options={{ title: "Artikel Gizi" }}
+        options={{ title: "NutriScan" }}
       />
       <Stack.Screen
         name="ArtikelDetail"
         component={ArtikelDetailScreen}
-        options={{ title: "Artikel" }}
+        options={{ title: "NutriScan" }}
       />
     </Stack.Navigator>
   );
@@ -159,12 +159,12 @@ function TipsStack() {
       <Stack.Screen
         name="TipsList"
         component={TipsListScreen}
-        options={{ title: "Tips Gizi" }}
+        options={{ title: "NutriScan" }}
       />
       <Stack.Screen
         name="TipsDetail"
         component={TipsDetailScreen}
-        options={{ title: "Tips" }}
+        options={{ title: "NutriScan" }}
       />
     </Stack.Navigator>
   );
@@ -185,18 +185,18 @@ function MainTabs() {
         options={{
           headerShown: true,
           ...HEADER_OPTS,
-          headerTitle: "Scan Makanan",
+          headerTitle: "NutriScan",
         }}
       />
       <Tab.Screen
         name="History"
         component={HistoryScreen}
-        options={{ headerShown: true, ...HEADER_OPTS, headerTitle: "Riwayat" }}
+        options={{ headerShown: true, ...HEADER_OPTS, headerTitle: "NutriScan" }}
       />
       <Tab.Screen
         name="Profile"
         component={ProfileScreen}
-        options={{ headerShown: true, ...HEADER_OPTS, headerTitle: "Profil" }}
+        options={{ headerShown: true, ...HEADER_OPTS, headerTitle: "NutriScan" }}
       />
     </Tab.Navigator>
   );

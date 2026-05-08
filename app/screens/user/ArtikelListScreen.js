@@ -133,6 +133,16 @@ export default function ArtikelListScreen({ navigation }) {
         }
         ListHeaderComponent={
           <>
+            {/* Header halaman */}
+            <View style={{ marginBottom: 16 }}>
+              <Text style={{ color: C.smoke, fontSize: 22, fontWeight: "bold", fontFamily: "Inter_700Bold" }}>
+                Artikel
+              </Text>
+              <Text style={{ color: C.placeholder, fontSize: 13, fontFamily: "Inter_400Regular", marginTop: 2 }}>
+                Informasi gizi {"&"} kesehatan terpilih
+              </Text>
+            </View>
+
             {/* Banner personalisasi kategori */}
             {meta && (
               <View

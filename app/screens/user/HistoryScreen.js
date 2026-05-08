@@ -19,7 +19,13 @@ const GIZI_KEYS    = [
   { key: "serat",       label: "Serat",       satuan: "g" },
 ];
 
-function toISO(date) { return date.toISOString().split("T")[0]; }
+function toISO(date) {
+  return [
+    date.getFullYear(),
+    String(date.getMonth() + 1).padStart(2, "0"),
+    String(date.getDate()).padStart(2, "0"),
+  ].join("-");
+}
 
 function namaHari(isoStr) {
   const d   = new Date(isoStr + "T00:00:00");
@@ -514,6 +520,15 @@ export default function HistoryScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: C.skyWarm }}>
+      <View style={{ paddingHorizontal: 20, paddingTop: 16, paddingBottom: 4 }}>
+        <Text style={{ color: C.smoke, fontSize: 22, fontWeight: "bold", fontFamily: "Inter_700Bold" }}>
+          Riwayat
+        </Text>
+        <Text style={{ color: C.placeholder, fontSize: 13, fontFamily: "Inter_400Regular", marginTop: 2 }}>
+          Pantau asupan nutrisi harian
+        </Text>
+      </View>
+
       <WeekStrip
         selectedDate={selectedDate}
         onSelect={(iso) => { setSelectedDate(iso); setShowGrafik(false); }}
