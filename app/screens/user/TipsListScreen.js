@@ -155,6 +155,16 @@ export default function TipsListScreen({ navigation }) {
         }
         ListHeaderComponent={
           <>
+            {/* Header halaman */}
+            <View style={{ marginBottom: 16 }}>
+              <Text style={{ color: C.smoke, fontSize: 22, fontWeight: "bold", fontFamily: "Inter_700Bold" }}>
+                Tips Gizi
+              </Text>
+              <Text style={{ color: C.placeholder, fontSize: 13, fontFamily: "Inter_400Regular", marginTop: 2 }}>
+                Panduan nutrisi untuk kesehatanmu
+              </Text>
+            </View>
+
             {/* Banner personalisasi kategori */}
             {meta && (
               <View style={{
