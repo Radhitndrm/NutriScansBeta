@@ -119,6 +119,7 @@ export default function TipsListScreen({ navigation }) {
             alignItems: "center",
             marginTop: 8,
             gap: 8,
+            flexWrap: "wrap",
           }}>
             {item.tag && (
               <View style={{
@@ -129,6 +130,18 @@ export default function TipsListScreen({ navigation }) {
               }}>
                 <Text style={{ color: "#fff", fontSize: 10, fontFamily: "Inter_400Regular" }}>
                   {item.tag}
+                </Text>
+              </View>
+            )}
+            {item.sumber && (
+              <View style={{
+                backgroundColor: C.smoke,
+                borderRadius: 10,
+                paddingHorizontal: 8,
+                paddingVertical: 2,
+              }}>
+                <Text style={{ color: "#fff", fontSize: 10, fontFamily: "Inter_400Regular" }}>
+                  {item.sumber}
                 </Text>
               </View>
             )}

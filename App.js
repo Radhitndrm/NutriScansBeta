@@ -45,7 +45,13 @@ const Stack = createNativeStackNavigator();
 const HEADER_OPTS = {
   headerStyle: { backgroundColor: C.smoke },
   headerTintColor: C.skyWarm,
-  headerTitleStyle: { fontWeight: "bold", fontFamily: "Inter_700Bold", fontSize: 17 },
+  headerTitleAlign: "center",
+  headerBackTitle: "Kembali",
+  headerTitleStyle: {
+    fontWeight: "bold",
+    fontFamily: "Inter_700Bold",
+    fontSize: 17,
+  },
 };
 
 const TAB_ROUTES = {
@@ -136,29 +142,37 @@ function AuthStack() {
   );
 }
 
-function InfoStack() {
+function MainTabs() {
+  return (
+    <Tab.Navigator
+      tabBar={(props) => <CustomTabBar {...props} />}
+      screenOptions={{
+        headerShown: true,
+        ...HEADER_OPTS,
+        headerTitle: "NutriScan",
+      }}
+      initialRouteName="Scan"
+    >
+      <Tab.Screen name="Info" component={ArtikelListScreen} />
+      <Tab.Screen name="Tips" component={TipsListScreen} />
+      <Tab.Screen name="Scan" component={ScanScreen} />
+      <Tab.Screen name="History" component={HistoryScreen} />
+      <Tab.Screen name="Profile" component={ProfileScreen} />
+    </Tab.Navigator>
+  );
+}
+
+function AppStack() {
   return (
     <Stack.Navigator screenOptions={HEADER_OPTS}>
       <Stack.Screen
-        name="ArtikelList"
-        component={ArtikelListScreen}
-        options={{ title: "NutriScan" }}
+        name="MainTabs"
+        component={MainTabs}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="ArtikelDetail"
         component={ArtikelDetailScreen}
-        options={{ title: "NutriScan" }}
-      />
-    </Stack.Navigator>
-  );
-}
-
-function TipsStack() {
-  return (
-    <Stack.Navigator screenOptions={HEADER_OPTS}>
-      <Stack.Screen
-        name="TipsList"
-        component={TipsListScreen}
         options={{ title: "NutriScan" }}
       />
       <Stack.Screen
@@ -167,38 +181,6 @@ function TipsStack() {
         options={{ title: "NutriScan" }}
       />
     </Stack.Navigator>
-  );
-}
-
-function MainTabs() {
-  return (
-    <Tab.Navigator
-      tabBar={(props) => <CustomTabBar {...props} />}
-      screenOptions={{ headerShown: false }}
-      initialRouteName="Scan"
-    >
-      <Tab.Screen name="Info" component={InfoStack} />
-      <Tab.Screen name="Tips" component={TipsStack} />
-      <Tab.Screen
-        name="Scan"
-        component={ScanScreen}
-        options={{
-          headerShown: true,
-          ...HEADER_OPTS,
-          headerTitle: "NutriScan",
-        }}
-      />
-      <Tab.Screen
-        name="History"
-        component={HistoryScreen}
-        options={{ headerShown: true, ...HEADER_OPTS, headerTitle: "NutriScan" }}
-      />
-      <Tab.Screen
-        name="Profile"
-        component={ProfileScreen}
-        options={{ headerShown: true, ...HEADER_OPTS, headerTitle: "NutriScan" }}
-      />
-    </Tab.Navigator>
   );
 }
 
@@ -218,7 +200,7 @@ function RootNavigator() {
       </View>
     );
   }
-  return user ? <MainTabs /> : <AuthStack />;
+  return user ? <AppStack /> : <AuthStack />;
 }
 
 export default function App() {

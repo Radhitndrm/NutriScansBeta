@@ -3,6 +3,7 @@
 const nutrisiDatabase = {
   rice: {
     nama: "Nasi Putih",
+    gramBase: 100,
     porsi: "100 gram",
     kalori: 175,
     protein: 3,
@@ -12,6 +13,7 @@ const nutrisiDatabase = {
   },
   hamburger: {
     nama: "Burger",
+    gramBase: 150,
     porsi: "150 gram",
     kalori: 354,
     protein: 17,
@@ -21,6 +23,7 @@ const nutrisiDatabase = {
   },
   sandwich: {
     nama: "Sandwich",
+    gramBase: 120,
     porsi: "120 gram",
     kalori: 250,
     protein: 10,
@@ -30,6 +33,7 @@ const nutrisiDatabase = {
   },
   apple: {
     nama: "Apel",
+    gramBase: 150,
     porsi: "150 gram",
     kalori: 78,
     protein: 0.4,
@@ -39,6 +43,7 @@ const nutrisiDatabase = {
   },
   orange: {
     nama: "Jeruk",
+    gramBase: 130,
     porsi: "130 gram",
     kalori: 61,
     protein: 1.2,
@@ -48,6 +53,7 @@ const nutrisiDatabase = {
   },
   banana: {
     nama: "Pisang",
+    gramBase: 120,
     porsi: "120 gram",
     kalori: 107,
     protein: 1.3,
@@ -57,6 +63,7 @@ const nutrisiDatabase = {
   },
   tomato: {
     nama: "Tomat",
+    gramBase: 100,
     porsi: "100 gram",
     kalori: 18,
     protein: 0.9,
@@ -66,6 +73,7 @@ const nutrisiDatabase = {
   },
   carrot: {
     nama: "Wortel",
+    gramBase: 100,
     porsi: "100 gram",
     kalori: 41,
     protein: 0.9,
@@ -75,6 +83,7 @@ const nutrisiDatabase = {
   },
   broccoli: {
     nama: "Brokoli",
+    gramBase: 100,
     porsi: "100 gram",
     kalori: 34,
     protein: 2.8,
@@ -84,6 +93,7 @@ const nutrisiDatabase = {
   },
   cucumber: {
     nama: "Timun",
+    gramBase: 100,
     porsi: "100 gram",
     kalori: 15,
     protein: 0.7,
@@ -93,6 +103,7 @@ const nutrisiDatabase = {
   },
   onion: {
     nama: "Bawang",
+    gramBase: 50,
     porsi: "50 gram",
     kalori: 20,
     protein: 0.6,
@@ -102,6 +113,7 @@ const nutrisiDatabase = {
   },
   lemon: {
     nama: "Lemon",
+    gramBase: 80,
     porsi: "80 gram",
     kalori: 22,
     protein: 0.8,
@@ -111,6 +123,7 @@ const nutrisiDatabase = {
   },
   kiwi: {
     nama: "Kiwi",
+    gramBase: 100,
     porsi: "100 gram",
     kalori: 61,
     protein: 1.1,
@@ -120,6 +133,7 @@ const nutrisiDatabase = {
   },
   chicken_nuggets: {
     nama: "Nugget Ayam",
+    gramBase: 100,
     porsi: "100 gram",
     kalori: 297,
     protein: 14,
@@ -129,6 +143,7 @@ const nutrisiDatabase = {
   },
   chinese_cabbage: {
     nama: "Sawi Putih",
+    gramBase: 100,
     porsi: "100 gram",
     kalori: 13,
     protein: 1.2,
@@ -138,6 +153,7 @@ const nutrisiDatabase = {
   },
   pizza: {
     nama: "Pizza",
+    gramBase: 150,
     porsi: "150 gram",
     kalori: 266,
     protein: 11,
@@ -149,6 +165,7 @@ const nutrisiDatabase = {
   // ── Makanan baru (model NutriScan) ──
   telur_rebus: {
     nama: "Telur Rebus",
+    gramBase: 60,
     porsi: "60 gram (1 butir)",
     kalori: 77,
     protein: 6.3,
@@ -158,6 +175,7 @@ const nutrisiDatabase = {
   },
   boiled_egg: {
     nama: "Telur Rebus",
+    gramBase: 60,
     porsi: "60 gram (1 butir)",
     kalori: 77,
     protein: 6.3,
@@ -167,6 +185,7 @@ const nutrisiDatabase = {
   },
   boiled_eggs: {
     nama: "Telur Rebus",
+    gramBase: 60,
     porsi: "60 gram (1 butir)",
     kalori: 77,
     protein: 6.3,
@@ -176,6 +195,7 @@ const nutrisiDatabase = {
   },
   egg: {
     nama: "Telur Rebus",
+    gramBase: 60,
     porsi: "60 gram (1 butir)",
     kalori: 77,
     protein: 6.3,
@@ -186,6 +206,7 @@ const nutrisiDatabase = {
 
   ayam_goreng: {
     nama: "Ayam Goreng",
+    gramBase: 100,
     porsi: "100 gram",
     kalori: 260,
     protein: 25,
@@ -195,6 +216,7 @@ const nutrisiDatabase = {
   },
   fried_chicken: {
     nama: "Ayam Goreng",
+    gramBase: 100,
     porsi: "100 gram",
     kalori: 260,
     protein: 25,
@@ -204,6 +226,7 @@ const nutrisiDatabase = {
   },
   chicken: {
     nama: "Ayam Goreng",
+    gramBase: 100,
     porsi: "100 gram",
     kalori: 260,
     protein: 25,
@@ -214,6 +237,7 @@ const nutrisiDatabase = {
 
   nasi_putih: {
     nama: "Nasi Putih",
+    gramBase: 100,
     porsi: "100 gram",
     kalori: 175,
     protein: 3,
@@ -223,6 +247,7 @@ const nutrisiDatabase = {
   },
   white_rice: {
     nama: "Nasi Putih",
+    gramBase: 100,
     porsi: "100 gram",
     kalori: 175,
     protein: 3,
@@ -232,6 +257,7 @@ const nutrisiDatabase = {
   },
   nasi: {
     nama: "Nasi Putih",
+    gramBase: 100,
     porsi: "100 gram",
     kalori: 175,
     protein: 3,
@@ -242,6 +268,7 @@ const nutrisiDatabase = {
 
   tahu_goreng: {
     nama: "Tahu Goreng",
+    gramBase: 100,
     porsi: "100 gram",
     kalori: 175,
     protein: 11,
@@ -251,6 +278,7 @@ const nutrisiDatabase = {
   },
   fried_tofu: {
     nama: "Tahu Goreng",
+    gramBase: 100,
     porsi: "100 gram",
     kalori: 175,
     protein: 11,
@@ -260,6 +288,7 @@ const nutrisiDatabase = {
   },
   tofu: {
     nama: "Tahu Goreng",
+    gramBase: 100,
     porsi: "100 gram",
     kalori: 175,
     protein: 11,
@@ -270,6 +299,7 @@ const nutrisiDatabase = {
 
   tempe_goreng: {
     nama: "Tempe Goreng",
+    gramBase: 100,
     porsi: "100 gram",
     kalori: 220,
     protein: 14,
@@ -279,6 +309,7 @@ const nutrisiDatabase = {
   },
   fried_tempeh: {
     nama: "Tempe Goreng",
+    gramBase: 100,
     porsi: "100 gram",
     kalori: 220,
     protein: 14,
@@ -288,6 +319,7 @@ const nutrisiDatabase = {
   },
   tempeh: {
     nama: "Tempe Goreng",
+    gramBase: 100,
     porsi: "100 gram",
     kalori: 220,
     protein: 14,
@@ -299,6 +331,7 @@ const nutrisiDatabase = {
   // typo di dataset Roboflow
   brocolli: {
     nama: "Brokoli",
+    gramBase: 100,
     porsi: "100 gram",
     kalori: 34,
     protein: 2.8,
@@ -310,6 +343,7 @@ const nutrisiDatabase = {
   // nama unik pisang dari dataset
   numwa: {
     nama: "Pisang",
+    gramBase: 120,
     porsi: "120 gram",
     kalori: 107,
     protein: 1.3,
@@ -319,6 +353,7 @@ const nutrisiDatabase = {
   },
   smellgood: {
     nama: "Pisang",
+    gramBase: 120,
     porsi: "120 gram",
     kalori: 107,
     protein: 1.3,

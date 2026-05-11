@@ -42,7 +42,12 @@ export default function useProfile() {
   useEffect(() => {
     if (!user) return;
 
-    const today = new Date().toISOString().split("T")[0];
+    const now = new Date();
+    const today = [
+      now.getFullYear(),
+      String(now.getMonth() + 1).padStart(2, "0"),
+      String(now.getDate()).padStart(2, "0"),
+    ].join("-");
     const q = query(
       collection(db, "users", user.uid, "history"),
       where("tanggal", "==", today)
