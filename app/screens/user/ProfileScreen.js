@@ -14,16 +14,15 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
-import { LinearGradient } from "expo-linear-gradient";
 import { C } from "../../theme/colors";
 import useProfile from "./hooks/useProfile";
 
 const NUTRISI_COLORS = {
-  kalori: "#E8935A",
-  protein: "#5A8BE8",
-  karbohidrat: "#5ABF8E",
-  lemak: "#BF7A5A",
-  serat: "#8A8E5A",
+  kalori: "#c17f5e",
+  protein: "#5e7ab0",
+  karbohidrat: "#6a9e7a",
+  lemak: "#9e7a5e",
+  serat: "#7a8a5e",
 };
 
 const LABEL_SUB = {
@@ -66,16 +65,16 @@ function persen(dapat, target) {
 function BarGizi({ label, satuan, target, dapat, colorKey }) {
   const p = persen(dapat, target);
   const color = NUTRISI_COLORS[colorKey] ?? C.smoke;
-  const statusColor = p >= 80 ? "#4a7a4a" : p >= 50 ? "#8a7040" : "#8a4040";
+  const statusColor = p >= 80 ? "#5a8a5a" : p >= 50 ? "#8a7a40" : "#8a5040";
 
   return (
-    <View style={{ marginBottom: 14 }}>
+    <View style={{ marginBottom: 12 }}>
       <View
         style={{
           flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "center",
-          marginBottom: 6,
+          marginBottom: 5,
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
@@ -100,7 +99,7 @@ function BarGizi({ label, satuan, target, dapat, colorKey }) {
         <Text
           style={{
             color: C.placeholder,
-            fontSize: 12,
+            fontSize: 11,
             fontFamily: "Inter_400Regular",
           }}
         >
@@ -110,29 +109,27 @@ function BarGizi({ label, satuan, target, dapat, colorKey }) {
         </Text>
       </View>
       <View
-        style={{ backgroundColor: C.cardDark, borderRadius: 99, height: 8 }}
+        style={{ backgroundColor: C.cardDark, borderRadius: 99, height: 7 }}
       >
         <View
           style={{
             backgroundColor: color,
             borderRadius: 99,
-            height: 8,
+            height: 7,
             width: `${p}%`,
           }}
         />
       </View>
-      {dapat != null && (
-        <Text
-          style={{
-            fontSize: 11,
-            marginTop: 3,
-            color: statusColor,
-            fontFamily: "Inter_400Regular",
-          }}
-        >
-          {p}% terpenuhi
-        </Text>
-      )}
+      <Text
+        style={{
+          fontSize: 10,
+          marginTop: 2,
+          color: statusColor,
+          fontFamily: "Inter_400Regular",
+        }}
+      >
+        {p}% terpenuhi
+      </Text>
     </View>
   );
 }
@@ -145,7 +142,7 @@ function InfoBaris({ label, nilai, last }) {
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        paddingVertical: 14,
+        paddingVertical: 13,
         paddingHorizontal: 16,
         borderBottomWidth: last ? 0 : 1,
         borderBottomColor: C.cardDark,
@@ -176,33 +173,86 @@ function InfoBaris({ label, nilai, last }) {
 /* ── Label section ── */
 function SectionLabel({ text }) {
   return (
-    <View
+    <Text
       style={{
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 6,
-        marginBottom: 10,
+        color: C.placeholder,
+        fontSize: 11,
+        fontFamily: "Inter_600SemiBold",
+        textTransform: "uppercase",
+        letterSpacing: 0.6,
+        marginBottom: 8,
       }}
     >
-      <View
+      {text}
+    </Text>
+  );
+}
+
+/* ── Kartu rekomendasi makanan ── */
+function KartuMakanan({ item, nutrisiUtama }) {
+  const nilaiUtama = nutrisiUtama ? item[nutrisiUtama.key] : null;
+  return (
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: C.card,
+        borderRadius: 12,
+        padding: 12,
+        gap: 2,
+      }}
+    >
+      <Text
         style={{
-          width: 8,
-          height: 8,
-          borderRadius: 4,
-          backgroundColor: NUTRISI_COLORS.karbohidrat,
+          color: C.smoke,
+          fontFamily: "Inter_700Bold",
+          fontSize: 13,
         }}
-      />
+        numberOfLines={1}
+      >
+        {item.nama}
+      </Text>
       <Text
         style={{
           color: C.placeholder,
+          fontFamily: "Inter_400Regular",
           fontSize: 11,
-          fontFamily: "Inter_600SemiBold",
-          textTransform: "uppercase",
-          letterSpacing: 0.5,
+          marginTop: 2,
         }}
       >
-        {text}
+        {item.kalori} kkal
       </Text>
+      <Text
+        style={{
+          color: C.placeholder,
+          fontFamily: "Inter_400Regular",
+          fontSize: 11,
+        }}
+      >
+        Porsi: {item.porsi}
+      </Text>
+      {nutrisiUtama && nilaiUtama != null && (
+        <View
+          style={{
+            backgroundColor: C.skyWarm,
+            borderRadius: 6,
+            paddingHorizontal: 6,
+            paddingVertical: 3,
+            alignSelf: "flex-start",
+            marginTop: 6,
+          }}
+        >
+          <Text
+            style={{
+              color: C.smoke,
+              fontFamily: "Inter_600SemiBold",
+              fontSize: 10,
+            }}
+          >
+            {nutrisiUtama.label}: {nilaiUtama}
+            {nutrisiUtama.satuan}
+          </Text>
+        </View>
+      )}
     </View>
   );
 }
@@ -443,11 +493,12 @@ function ModalEditProfil({ visible, profil, onSimpan, onBatal }) {
           activeOpacity={1}
           onPress={onBatal}
         />
-        <LinearGradient
-          colors={[C.smoke, "#2d3028"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={{ borderTopLeftRadius: 28, borderTopRightRadius: 28 }}
+        <View
+          style={{
+            backgroundColor: C.smoke,
+            borderTopLeftRadius: 28,
+            borderTopRightRadius: 28,
+          }}
         >
           <ScrollView
             contentContainerStyle={{
@@ -458,7 +509,6 @@ function ModalEditProfil({ visible, profil, onSimpan, onBatal }) {
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
           >
-            {/* Handle bar */}
             <View
               style={{
                 width: 40,
@@ -470,7 +520,6 @@ function ModalEditProfil({ visible, profil, onSimpan, onBatal }) {
               }}
             />
 
-            {/* Title */}
             <Text
               style={{
                 color: C.white,
@@ -483,7 +532,6 @@ function ModalEditProfil({ visible, profil, onSimpan, onBatal }) {
               Edit Profil
             </Text>
 
-            {/* Avatar */}
             <TouchableOpacity
               onPress={pilihSumber}
               activeOpacity={0.8}
@@ -529,7 +577,7 @@ function ModalEditProfil({ visible, profil, onSimpan, onBatal }) {
                     width: 28,
                     height: 28,
                     borderRadius: 14,
-                    backgroundColor: C.white,
+                    backgroundColor: C.skyWarm,
                     alignItems: "center",
                     justifyContent: "center",
                     borderWidth: 2,
@@ -551,7 +599,6 @@ function ModalEditProfil({ visible, profil, onSimpan, onBatal }) {
               </Text>
             </TouchableOpacity>
 
-            {/* Nama */}
             <FormField label="Nama">
               <TextInput
                 value={username}
@@ -562,7 +609,6 @@ function ModalEditProfil({ visible, profil, onSimpan, onBatal }) {
               />
             </FormField>
 
-            {/* Sub Kategori */}
             <FormField label="Sub Kategori">
               <View style={{ gap: 8 }}>
                 {opsiSub.map((item) => {
@@ -578,7 +624,7 @@ function ModalEditProfil({ visible, profil, onSimpan, onBatal }) {
                         padding: 12,
                         borderRadius: 10,
                         backgroundColor: selected
-                          ? C.white
+                          ? C.skyWarm
                           : "rgba(255,255,255,0.08)",
                       }}
                     >
@@ -612,7 +658,6 @@ function ModalEditProfil({ visible, profil, onSimpan, onBatal }) {
               </View>
             </FormField>
 
-            {/* Nama Anak */}
             {kategori === "balita" && (
               <FormField label="Nama Anak">
                 <TextInput
@@ -625,7 +670,6 @@ function ModalEditProfil({ visible, profil, onSimpan, onBatal }) {
               </FormField>
             )}
 
-            {/* Buttons */}
             <View style={{ flexDirection: "row", gap: 10, marginTop: 8 }}>
               <TouchableOpacity
                 onPress={onBatal}
@@ -658,18 +702,20 @@ function ModalEditProfil({ visible, profil, onSimpan, onBatal }) {
                 style={{
                   flex: 2,
                   paddingVertical: 14,
-                  backgroundColor: C.white,
+                  backgroundColor: C.skyWarm,
                   borderRadius: 14,
                   alignItems: "center",
                 }}
               >
-                <Text style={{ color: C.smoke, fontFamily: "Inter_700Bold" }}>
+                <Text
+                  style={{ color: C.smoke, fontFamily: "Inter_700Bold" }}
+                >
                   Simpan
                 </Text>
               </TouchableOpacity>
             </View>
           </ScrollView>
-        </LinearGradient>
+        </View>
       </KeyboardAvoidingView>
     </Modal>
   );
@@ -679,7 +725,7 @@ function ModalEditProfil({ visible, profil, onSimpan, onBatal }) {
    SCREEN UTAMA
 ══════════════════════════════ */
 export default function ProfileScreen() {
-  const { profil, akg, todayTotal, loading, user, logout, updateProfil } =
+  const { profil, akg, todayTotal, rekomendasi, loading, user, logout, updateProfil } =
     useProfile();
   const [showEdit, setShowEdit] = useState(false);
   const [showLogout, setShowLogout] = useState(false);
@@ -701,6 +747,16 @@ export default function ProfileScreen() {
 
   const isIbuHamil = profil?.kategori === "ibu_hamil";
   const labelKategori = isIbuHamil ? "Ibu Hamil" : "Balita";
+  const kaloriPersen = persen(todayTotal?.kalori ?? 0, akg?.kalori ?? 0);
+
+  const defisitGizi = GIZI
+    .filter((g) => akg?.[g.key] && persen(todayTotal?.[g.key] ?? 0, akg[g.key]) < 50)
+    .sort(
+      (a, b) =>
+        persen(todayTotal?.[a.key] ?? 0, akg[a.key]) -
+        persen(todayTotal?.[b.key] ?? 0, akg[b.key])
+    );
+  const nutrisiUtamaKurang = defisitGizi[0] ?? null;
 
   async function handleSimpan(patch) {
     if (!patch.username) {
@@ -711,35 +767,33 @@ export default function ProfileScreen() {
     setShowEdit(false);
   }
 
-  async function handleSimpanSubKat(subKategori) {
-    await updateProfil({ subKategori });
-  }
-
   return (
     <View style={{ flex: 1, backgroundColor: C.skyWarm }}>
       <ScrollView
         contentContainerStyle={{ paddingBottom: 48 }}
         showsVerticalScrollIndicator={false}
       >
-        {/* ── HERO SECTION ── */}
-        <LinearGradient
-          colors={["#5d6256", "#AAB0A3"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={{ paddingHorizontal: 24, paddingTop: 24, paddingBottom: 32 }}
+        {/* ── HERO ── */}
+        <View
+          style={{
+            backgroundColor: C.smoke,
+            paddingHorizontal: 24,
+            paddingTop: 24,
+            paddingBottom: 28,
+          }}
         >
-          {/* Avatar + edit button */}
-          <View style={{ alignItems: "center", marginBottom: 16 }}>
+          {/* Avatar + edit */}
+          <View style={{ alignItems: "center", marginBottom: 20 }}>
             <View style={{ position: "relative" }}>
               <View
                 style={{
-                  width: 90,
-                  height: 90,
-                  borderRadius: 45,
+                  width: 88,
+                  height: 88,
+                  borderRadius: 44,
                   borderWidth: 3,
-                  borderColor: "rgba(255,255,255,0.25)",
+                  borderColor: "rgba(255,255,255,0.2)",
                   overflow: "hidden",
-                  backgroundColor: "rgba(255,255,255,0.15)",
+                  backgroundColor: "rgba(255,255,255,0.12)",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
@@ -747,13 +801,13 @@ export default function ProfileScreen() {
                 {profil?.fotoUri ? (
                   <Image
                     source={{ uri: profil.fotoUri }}
-                    style={{ width: 90, height: 90 }}
+                    style={{ width: 88, height: 88 }}
                   />
                 ) : (
                   <Ionicons
                     name="person"
-                    size={40}
-                    color="rgba(255,255,255,0.7)"
+                    size={38}
+                    color="rgba(255,255,255,0.65)"
                   />
                 )}
               </View>
@@ -766,7 +820,7 @@ export default function ProfileScreen() {
                   width: 28,
                   height: 28,
                   borderRadius: 14,
-                  backgroundColor: C.white,
+                  backgroundColor: C.skyWarm,
                   alignItems: "center",
                   justifyContent: "center",
                   borderWidth: 2,
@@ -777,7 +831,6 @@ export default function ProfileScreen() {
               </TouchableOpacity>
             </View>
 
-            {/* Nama */}
             <Text
               style={{
                 color: C.white,
@@ -789,42 +842,32 @@ export default function ProfileScreen() {
               {profil?.username || "Pengguna"}
             </Text>
 
-            {/* Kategori badge */}
             <View
               style={{
-                flexDirection: "row",
-                gap: 8,
+                backgroundColor: "rgba(255,255,255,0.12)",
+                paddingHorizontal: 14,
+                paddingVertical: 5,
+                borderRadius: 20,
                 marginTop: 6,
-                alignItems: "center",
               }}
             >
-              <View
+              <Text
                 style={{
-                  backgroundColor: "rgba(255,255,255,0.15)",
-                  paddingHorizontal: 12,
-                  paddingVertical: 4,
-                  borderRadius: 20,
+                  color: C.skyWarm,
+                  fontSize: 12,
+                  fontFamily: "Inter_600SemiBold",
                 }}
               >
-                <Text
-                  style={{
-                    color: C.white,
-                    fontSize: 12,
-                    fontFamily: "Inter_600SemiBold",
-                  }}
-                >
-                  {labelKategori}
-                  {profil?.subKategori && LABEL_SUB[profil.subKategori]
-                    ? `  ·  ${LABEL_SUB[profil.subKategori]}`
-                    : ""}
-                </Text>
-              </View>
+                {labelKategori}
+                {profil?.subKategori && LABEL_SUB[profil.subKategori]
+                  ? `  ·  ${LABEL_SUB[profil.subKategori]}`
+                  : ""}
+              </Text>
             </View>
 
-            {/* Email */}
             <Text
               style={{
-                color: "rgba(255,255,255,0.5)",
+                color: "rgba(255,255,255,0.4)",
                 fontSize: 12,
                 fontFamily: "Inter_400Regular",
                 marginTop: 6,
@@ -834,70 +877,99 @@ export default function ProfileScreen() {
             </Text>
           </View>
 
-          {/* Quick stats */}
-          <View style={{ flexDirection: "row", gap: 10 }}>
-            {[
-              {
-                label: "Kalori Hari Ini",
-                val: `${Math.round(todayTotal?.kalori ?? 0)} kkal`,
-                color: NUTRISI_COLORS.kalori,
-              },
-              {
-                label: "Target Kalori",
-                val: `${akg?.kalori ?? "–"} kkal`,
-                color: NUTRISI_COLORS.protein,
-              },
-            ].map(({ label, val, color }) => (
-              <View
-                key={label}
+          {/* Kalori hari ini */}
+          <View
+            style={{
+              backgroundColor: "rgba(255,255,255,0.08)",
+              borderRadius: 14,
+              padding: 16,
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 14,
+            }}
+          >
+            <View
+              style={{
+                width: 48,
+                height: 48,
+                borderRadius: 24,
+                backgroundColor: "rgba(255,255,255,0.1)",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Text
                 style={{
-                  flex: 1,
-                  backgroundColor: "rgba(255,255,255,0.1)",
-                  borderRadius: 14,
-                  padding: 12,
-                  borderTopWidth: 2,
-                  borderTopColor: color,
+                  color: C.skyWarm,
+                  fontFamily: "Inter_700Bold",
+                  fontSize: 13,
+                  lineHeight: 14,
                 }}
               >
-                <Text
+                {kaloriPersen}%
+              </Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text
+                style={{
+                  color: "rgba(255,255,255,0.5)",
+                  fontSize: 11,
+                  fontFamily: "Inter_400Regular",
+                  marginBottom: 2,
+                }}
+              >
+                Kalori Hari Ini
+              </Text>
+              <Text
+                style={{
+                  color: C.white,
+                  fontSize: 15,
+                  fontFamily: "Inter_700Bold",
+                }}
+              >
+                {Math.round(todayTotal?.kalori ?? 0)} kkal
+              </Text>
+              <View
+                style={{
+                  backgroundColor: "rgba(255,255,255,0.12)",
+                  borderRadius: 99,
+                  height: 5,
+                  marginTop: 6,
+                }}
+              >
+                <View
                   style={{
-                    color: "rgba(255,255,255,0.55)",
-                    fontSize: 11,
-                    fontFamily: "Inter_400Regular",
-                    marginBottom: 4,
+                    backgroundColor: NUTRISI_COLORS.kalori,
+                    borderRadius: 99,
+                    height: 5,
+                    width: `${kaloriPersen}%`,
                   }}
-                >
-                  {label}
-                </Text>
-                <Text
-                  style={{
-                    color: C.white,
-                    fontSize: 14,
-                    fontFamily: "Inter_700Bold",
-                  }}
-                >
-                  {val}
-                </Text>
+                />
               </View>
-            ))}
+              <Text
+                style={{
+                  color: "rgba(255,255,255,0.35)",
+                  fontSize: 10,
+                  fontFamily: "Inter_400Regular",
+                  marginTop: 3,
+                }}
+              >
+                Target: {akg?.kalori ?? "–"} kkal
+              </Text>
+            </View>
           </View>
-        </LinearGradient>
+        </View>
 
         {/* ── CONTENT ── */}
         <View style={{ padding: 20, gap: 20 }}>
-          {/* Data Profil */}
+          {/* Informasi Profil */}
           <View>
             <SectionLabel text="Informasi Profil" />
             <View
               style={{
-                backgroundColor: C.white,
+                backgroundColor: C.card,
                 borderRadius: 16,
                 overflow: "hidden",
-                shadowColor: "#000",
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.06,
-                shadowRadius: 6,
-                elevation: 2,
               }}
             >
               <InfoBaris label="Kategori" nilai={labelKategori} />
@@ -915,30 +987,25 @@ export default function ProfileScreen() {
             </View>
           </View>
 
-          {/* Gizi Hari Ini */}
+          {/* Nutrisi Hari Ini */}
           <View>
-            <SectionLabel text="Pemenuhan Gizi Hari Ini" />
+            <SectionLabel text="Nutrisi Hari Ini" />
             <View
               style={{
-                backgroundColor: C.white,
+                backgroundColor: C.card,
                 borderRadius: 16,
-                padding: 18,
-                shadowColor: "#000",
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.06,
-                shadowRadius: 6,
-                elevation: 2,
+                padding: 16,
               }}
             >
               <Text
                 style={{
                   fontSize: 11,
                   color: C.placeholder,
-                  marginBottom: 16,
+                  marginBottom: 14,
                   fontFamily: "Inter_400Regular",
                 }}
               >
-                Berdasarkan AKG Kemenkes 2019 · {akg?.label}
+                AKG Kemenkes 2019 · {akg?.label}
               </Text>
               {GIZI.map((g) => (
                 <BarGizi
@@ -952,6 +1019,41 @@ export default function ProfileScreen() {
               ))}
             </View>
           </View>
+
+          {/* Rekomendasi Makanan */}
+          {rekomendasi.length > 0 && (
+            <View>
+              <SectionLabel text="Rekomendasi Untuk Kamu" />
+              <Text
+                style={{
+                  color: C.placeholder,
+                  fontSize: 12,
+                  fontFamily: "Inter_400Regular",
+                  marginBottom: 10,
+                }}
+              >
+                {nutrisiUtamaKurang
+                  ? `Perbanyak ${nutrisiUtamaKurang.label.toLowerCase()} hari ini`
+                  : "Makanan yang direkomendasikan"}
+              </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                  gap: 10,
+                }}
+              >
+                {rekomendasi.map((item, i) => (
+                  <View key={i} style={{ width: "47.5%" }}>
+                    <KartuMakanan
+                      item={item}
+                      nutrisiUtama={nutrisiUtamaKurang}
+                    />
+                  </View>
+                ))}
+              </View>
+            </View>
+          )}
 
           {/* Logout */}
           <TouchableOpacity
@@ -967,10 +1069,10 @@ export default function ProfileScreen() {
               gap: 8,
             }}
           >
-            <Ionicons name="log-out-outline" size={18} color={C.white} />
+            <Ionicons name="log-out-outline" size={18} color={C.skyWarm} />
             <Text
               style={{
-                color: C.white,
+                color: C.skyWarm,
                 fontFamily: "Inter_600SemiBold",
                 fontSize: 14,
               }}
@@ -981,7 +1083,6 @@ export default function ProfileScreen() {
         </View>
       </ScrollView>
 
-      {/* Modal Edit */}
       {showEdit && (
         <ModalEditProfil
           visible={showEdit}
@@ -991,7 +1092,6 @@ export default function ProfileScreen() {
         />
       )}
 
-      {/* Modal Konfirmasi Logout */}
       <Modal visible={showLogout} transparent animationType="fade">
         <View
           style={{
@@ -1076,7 +1176,7 @@ export default function ProfileScreen() {
                 }}
               >
                 <Text
-                  style={{ fontFamily: "Inter_600SemiBold", color: C.white }}
+                  style={{ fontFamily: "Inter_600SemiBold", color: C.skyWarm }}
                 >
                   Keluar
                 </Text>

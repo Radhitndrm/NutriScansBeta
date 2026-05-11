@@ -17,6 +17,7 @@ import { db } from "../../utils/firebaseConfig";
 import { deteksiMakanan } from "../../utils/geminiHelper";
 import { useAuth } from "../../context/AuthContext";
 import { C } from "../../theme/colors";
+import { getFoodIcon } from "../../utils/foodIcon";
 
 const NUTRISI_FIELDS = [
   { key: "kalori", label: "Kalori", satuan: "kkal" },
@@ -83,7 +84,9 @@ function KartuMakanan({ item }) {
     { key: "protein", val: item.protein, label: "protein" },
     { key: "karbohidrat", val: item.karbohidrat, label: "karbo" },
     { key: "lemak", val: item.lemak, label: "lemak" },
+    { key: "serat", val: item.serat, label: "serat" },
   ];
+  const { icon, color } = getFoodIcon(item.nama);
 
   return (
     <LinearGradient
@@ -109,18 +112,28 @@ function KartuMakanan({ item }) {
           marginBottom: 6,
         }}
       >
-        <Text
-          style={{
-            color: C.white,
-            fontWeight: "bold",
-            fontSize: 15,
-            fontFamily: "Inter_600SemiBold",
-            flex: 1,
-            marginRight: 8,
-          }}
-        >
-          {item.nama}
-        </Text>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 10, flex: 1, marginRight: 8 }}>
+          <View style={{
+            width: 34, height: 34, borderRadius: 10,
+            backgroundColor: "rgba(255,255,255,0.10)",
+            borderWidth: 1,
+            borderColor: "rgba(255,255,255,0.08)",
+            alignItems: "center", justifyContent: "center",
+          }}>
+            <Ionicons name={icon} size={16} color="rgba(255,255,255,0.80)" />
+          </View>
+          <Text
+            style={{
+              color: C.white,
+              fontWeight: "bold",
+              fontSize: 15,
+              fontFamily: "Inter_600SemiBold",
+              flex: 1,
+            }}
+          >
+            {item.nama}
+          </Text>
+        </View>
         {item.confidence != null && (
           <View
             style={{
@@ -156,7 +169,7 @@ function KartuMakanan({ item }) {
       ) : (
         <View style={{ marginBottom: 10 }} />
       )}
-      <View style={{ flexDirection: "row", gap: 8 }}>
+      <View style={{ flexDirection: "row", gap: 6 }}>
         {nutrisiDisplay.map(({ key, val, label }) => (
           <View
             key={key}
