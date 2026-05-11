@@ -16,12 +16,8 @@ import { resolveKategori } from "../../utils/artikelConfig";
 import { C } from "../../theme/colors";
 
 const KATEGORI_META = {
-  ibu_hamil: {
-    label: "Ibu Hamil",
-    icon: "heart-circle-outline",
-    warna: "#7a6a4a",
-  },
-  balita: { label: "Balita", icon: "happy-outline", warna: "#4a6a5a" },
+  ibu_hamil: { label: "Ibu Hamil", icon: "heart-circle-outline" },
+  balita:    { label: "Balita",    icon: "happy-outline" },
 };
 
 const LABEL_SUB = {
@@ -57,68 +53,89 @@ export default function ArtikelListScreen({ navigation }) {
         onPress={() => navigation.navigate("ArtikelDetail", { artikel: item })}
         activeOpacity={0.85}
         style={{
-          backgroundColor: "#e6e3db",
-          borderRadius: 18,
-          padding: 20,
+          backgroundColor: C.card,
+          borderRadius: 16,
+          padding: 18,
           marginBottom: 14,
+          flexDirection: "row",
+          alignItems: "flex-start",
+          gap: 14,
           shadowColor: "#000",
-          shadowOffset: { width: 0, height: 4 },
-          shadowOpacity: 0.1,
-          shadowRadius: 8,
+          shadowOffset: { width: 0, height: 3 },
+          shadowOpacity: 0.08,
+          shadowRadius: 6,
           elevation: 2,
         }}
       >
-        <Text
-          style={{
-            fontSize: 16,
-            fontFamily: "Inter_700Bold",
-            color: "#4a4f42",
-            marginBottom: 6,
-            letterSpacing: 0.2,
-          }}
-        >
-          {item.judul}
-        </Text>
+        <View style={{
+          width: 48,
+          height: 48,
+          borderRadius: 14,
+          backgroundColor: C.skyWarm,
+          alignItems: "center",
+          justifyContent: "center",
+        }}>
+          <Ionicons name="newspaper-outline" size={24} color={C.smoke} style={{ opacity: 0.7 }} />
+        </View>
 
-        <Text
-          style={{
-            fontSize: 13,
-            color: "#7a7a7a",
-            lineHeight: 21,
-            marginBottom: 10,
-            fontFamily: "Inter_400Regular",
-          }}
-          numberOfLines={2}
-        >
-          {item.ringkasan}
-        </Text>
-
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <View style={{ flex: 1 }}>
           <Text
             style={{
-              fontSize: 11,
-              color: "#8a8a8a",
-              fontFamily: "Inter_400Regular",
+              fontSize: 15,
+              fontFamily: "Inter_700Bold",
+              color: C.smoke,
+              marginBottom: 4,
+              lineHeight: 21,
             }}
+            numberOfLines={2}
           >
-            {item.sumber}
+            {item.judul}
           </Text>
           <Text
             style={{
-              fontSize: 11,
-              color: "#8a8a8a",
+              fontSize: 13,
+              color: C.smoke,
+              opacity: 0.65,
+              lineHeight: 19,
               fontFamily: "Inter_400Regular",
             }}
+            numberOfLines={2}
           >
-            {item.tanggal}
+            {item.ringkasan}
           </Text>
+
+          <View style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginTop: 8,
+            gap: 8,
+            flexWrap: "wrap",
+          }}>
+            {item.sumber && (
+              <View style={{
+                backgroundColor: C.smoke,
+                borderRadius: 10,
+                paddingHorizontal: 8,
+                paddingVertical: 2,
+              }}>
+                <Text style={{ color: "#fff", fontSize: 10, fontFamily: "Inter_400Regular" }}>
+                  {item.sumber}
+                </Text>
+              </View>
+            )}
+            {item.tanggal && (
+              <Text style={{ fontSize: 11, color: C.smoke, opacity: 0.4, fontFamily: "Inter_400Regular" }}>
+                {item.tanggal}
+              </Text>
+            )}
+          </View>
         </View>
       </TouchableOpacity>
     );
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#ccc9be" }}>
+    <View style={{ flex: 1, backgroundColor: C.skyWarm }}>
       <FlatList
         data={articles}
         keyExtractor={(item) => item.id}
@@ -128,7 +145,7 @@ export default function ArtikelListScreen({ navigation }) {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={handleRefresh}
-            tintColor="#3f4338"
+            tintColor={C.smoke}
           />
         }
         ListHeaderComponent={
@@ -248,11 +265,10 @@ export default function ArtikelListScreen({ navigation }) {
               </View>
             )}
 
-            {/* Loading spinner pertama kali */}
             {loading && articles.length === 0 && (
               <ActivityIndicator
                 size="large"
-                color="#3f4338"
+                color={C.smoke}
                 style={{ marginTop: 40 }}
               />
             )}
@@ -263,7 +279,8 @@ export default function ArtikelListScreen({ navigation }) {
             <Text
               style={{
                 textAlign: "center",
-                color: "#7a7a7a",
+                color: C.smoke,
+                opacity: 0.4,
                 marginTop: 40,
                 fontFamily: "Inter_400Regular",
               }}
