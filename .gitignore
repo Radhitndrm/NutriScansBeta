@@ -39,7 +39,3 @@ yarn-error.*
 # generated native folders
 /ios
 /android
-
-/app/utils/geminiConfig.js
-/app/utils/firebaseConfig.js
-/app/utils/roboflowConfig.js
