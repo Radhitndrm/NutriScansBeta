@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import {
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
   View,
   Text,
@@ -95,8 +97,12 @@ export default function LoginScreen({ navigation }) {
   }
 
   return (
-    <ScrollView
+    <KeyboardAvoidingView
       style={{ flex: 1, backgroundColor: C.skyWarm }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+    <ScrollView
+      style={{ flex: 1 }}
       contentContainerStyle={{
         paddingHorizontal: 30,
         paddingTop: 60,
@@ -189,5 +195,6 @@ export default function LoginScreen({ navigation }) {
         )}
       </TouchableOpacity>
     </ScrollView>
+    </KeyboardAvoidingView>
   );
 }

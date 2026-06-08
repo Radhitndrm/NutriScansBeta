@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import {
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
   View,
   Text,
@@ -38,9 +40,13 @@ export default function ForgotPasswordScreen({ navigation }) {
   }
 
   return (
-    <ScrollView
+    <KeyboardAvoidingView
       style={{ flex: 1, backgroundColor: C.skyWarm }}
-      contentContainerStyle={{ flex: 1, paddingHorizontal: 30, justifyContent: "center" }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+    <ScrollView
+      style={{ flex: 1 }}
+      contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 30, justifyContent: "center" }}
       keyboardShouldPersistTaps="handled"
     >
       {/* Judul */}
@@ -126,5 +132,6 @@ export default function ForgotPasswordScreen({ navigation }) {
         )}
       </TouchableOpacity>
     </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
