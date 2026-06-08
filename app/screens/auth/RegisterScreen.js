@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView, View, Text, Image, TouchableOpacity } from "react-native";
+import { KeyboardAvoidingView, Platform, ScrollView, View, Text, Image, TouchableOpacity } from "react-native";
 import useRegister from "./hooks/useRegister";
 import Step1Form from "./components/Step1Form";
 import Step2Form from "./components/Step2Form";
@@ -10,12 +10,17 @@ export default function RegisterScreen({ navigation }) {
   const reg = useRegister(navigation);
 
   return (
-    <ScrollView
+    <KeyboardAvoidingView
       style={{ flex: 1, backgroundColor: C.skyWarm }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+    <ScrollView
+      style={{ flex: 1 }}
       contentContainerStyle={{
         paddingHorizontal: 30,
         paddingTop: 60,
         paddingBottom: 40,
+        flexGrow: 1,
       }}
       keyboardShouldPersistTaps="handled"
     >
@@ -89,5 +94,6 @@ export default function RegisterScreen({ navigation }) {
         />
       )}
     </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
