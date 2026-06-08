@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import "./global.css";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -5,6 +6,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
 import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import * as Updates from "expo-updates";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import {
   SafeAreaProvider,
@@ -210,6 +212,18 @@ export default function App() {
     Inter_600SemiBold,
     Inter_700Bold,
   });
+
+  useEffect(() => {
+    if (Updates.isEmbeddedLaunch) {
+      Updates.checkForUpdateAsync()
+        .then((u) => {
+          if (u.isAvailable) {
+            Updates.fetchUpdateAsync().then(() => Updates.reloadAsync());
+          }
+        })
+        .catch(() => {});
+    }
+  }, []);
 
   if (!fontsLoaded) {
     return (

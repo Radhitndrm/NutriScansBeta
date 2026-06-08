@@ -26,6 +26,12 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
+    "updates": {
+      "url": "https://u.expo.dev/5854b338-2d32-436a-a2b1-33e1c3256618",
+      "enabled": true,
+      "fallbackToCacheTimeout": 0
+    },
+    "runtimeVersion": "1.0.0",
     "plugins": [
       "expo-font"
     ],
