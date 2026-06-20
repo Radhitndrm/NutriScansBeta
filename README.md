@@ -11,7 +11,6 @@ Aplikasi **nutrition scanner** untuk masyarakat Indonesia berbasis React Native 
 - [Kategori Pengguna](#kategori-pengguna)
 - [Fitur](#fitur)
 - [Halaman & Navigasi](#halaman--navigasi)
-- [Roadmap Pengembangan](#roadmap-pengembangan)
 - [Struktur Folder](#struktur-folder)
 - [Setup & Instalasi](#setup--instalasi)
 - [Environment Variables](#environment-variables)
@@ -23,11 +22,11 @@ Aplikasi **nutrition scanner** untuk masyarakat Indonesia berbasis React Native 
 
 NutriScan membantu ibu hamil dan orang tua balita memantau kecukupan gizi harian melalui:
 
-- Deteksi makanan otomatis menggunakan foto (Roboflow AI)
-- Pencocokan data gizi dari database TKPI lokal
+- Deteksi makanan otomatis menggunakan foto (Roboflow AI + Google Gemini)
+- Pencocokan data gizi dari database nutrisi lokal
 - Pemantauan progress harian terhadap target AKG personal
-- Rekomendasi makanan jika gizi harian kurang dari target
-- Laporan mingguan berbasis grafik
+- Artikel dan tips gizi berdasarkan kategori pengguna
+- Profil pengguna dengan target AKG yang dipersonalisasi
 
 ---
 
@@ -38,14 +37,13 @@ NutriScan membantu ibu hamil dan orang tua balita memantau kecukupan gizi harian
 
 | Komponen | Teknologi |
 |---|---|
-| Framework | React Native + Expo (Expo Go) |
-| AI Deteksi Makanan | Roboflow API |
-| Database Gizi | TKPI (Tabel Komposisi Pangan Indonesia) — lokal JSON |
+| Framework | React Native + Expo (Expo Router) |
+| AI Deteksi Makanan | Roboflow API + Google Gemini API |
+| Database Gizi | Data nutrisi lokal (JSON) |
 | Autentikasi | Firebase Authentication (email + password) |
 | Penyimpanan Lokal | AsyncStorage |
-| Notifikasi | Expo Notifications |
-| Grafik | react-native-chart-kit |
-| Navigasi | React Navigation v6 (Stack + Bottom Tabs) |
+| Styling | NativeWind (Tailwind CSS) |
+| Navigasi | Expo Router (file-based routing) |
 
 ---
 
@@ -61,31 +59,16 @@ Target AKG disesuaikan berdasarkan usia anak (0–5 tahun). Nutrien prioritas: p
 
 ## Fitur
 
-### ✅ Sudah Ada
-- Login & Register dengan Firebase Authentication
-- Scan makanan via kamera / galeri → Roboflow → hasil gizi
-- History Screen (placeholder)
-- Profile Screen + logout (placeholder)
-
-### 🔄 Dalam Pengembangan
-
-#### Fase 1 — Core & Profil
-- ✅ **Pilih kategori user** saat registrasi (ibu hamil / balita, usia, trimester)
-- ✅ **Data AKG Kemenkes 2019** per kategori dalam format JSON lokal
-- [ ] **ProfileScreen** — tampilkan target AKG + ring progress harian
-- [ ] **HistoryScreen** — log makanan harian + progress bar per nutrien
-
-#### Fase 2 — Analisis & Rekomendasi
-- [ ] **Rekomendasi makanan** jika gizi harian di bawah target AKG
-- [ ] **Laporan mingguan** — grafik bar 7 hari per nutrien
-- [ ] **Info Gizi Makanan** — detail nutrien + manfaat dari TKPI
-- [ ] **Porsi Manual** — edit estimasi porsi setelah scan, kalkulasi ulang otomatis
-
-#### Fase 3 — Konten & Notifikasi
-- [ ] **Tips Gizi Harian** — konten per kategori (ibu hamil / balita)
-- [ ] **Artikel Kesehatan** — konten dari Kemenkes, bisa search & filter
-- [ ] **Tambah Manual** — input makanan tanpa foto, search dari TKPI
-- [ ] **Alert Gizi Kurang** — push notifikasi pukul 15.00 jika gizi < 50% AKG
+- Login & Register dengan Firebase Authentication (multi-step form)
+- Forgot Password via Firebase
+- Pilih kategori user saat registrasi (ibu hamil / balita, usia, trimester)
+- Data AKG Kemenkes 2019 per kategori dalam format JSON lokal
+- Scan makanan via kamera / galeri → Roboflow + Gemini → hasil gizi
+- History makanan harian dengan log per tanggal
+- Profile Screen dengan target AKG personal
+- Tips Gizi Harian — konten per kategori (ibu hamil / balita)
+- Artikel Kesehatan — konten edukasi gizi, bisa search & filter
+- Notifikasi reminder gizi harian
 
 ---
 
@@ -95,65 +78,19 @@ Target AKG disesuaikan berdasarkan usia anak (0–5 tahun). Nutrien prioritas: p
 | Halaman | Tujuan | Fitur Utama |
 |---|---|---|
 | `LoginScreen` | Masuk akun | Email + password, Firebase Auth |
-| `RegisterScreen` | Buat akun baru | Pilih kategori, usia, trimester / usia anak |
+| `RegisterScreen` | Buat akun baru | Multi-step: pilih kategori, usia, trimester / usia anak |
+| `ForgotPasswordScreen` | Reset password | Email, Firebase password reset |
 
-### Scan
+### User
 | Halaman | Tujuan | Fitur Utama |
 |---|---|---|
-| `ScanScreen` | Deteksi makanan | Kamera / galeri → Roboflow |
-| `ScanResultScreen` | Tampil hasil gizi | Tabel gizi TKPI, % AKG, simpan ke histori |
-| `PorsiManualScreen` | Koreksi porsi | Slider gram, kalkulasi ulang gizi |
-| `TambahManualScreen` | Input tanpa foto | Search TKPI, pilih porsi, simpan |
-
-### Histori & Laporan
-| Halaman | Tujuan | Fitur Utama |
-|---|---|---|
-| `HistoryScreen` | Log makanan harian | List per tanggal, total gizi, progress bar AKG |
-| `HistoryDetailScreen` | Detail satu hari | List makanan + waktu makan, breakdown nutrien |
-| `LaporanMingguanScreen` | Tren gizi mingguan | Grafik bar 7 hari, rata-rata vs target AKG |
-
-### Profil
-| Halaman | Tujuan | Fitur Utama |
-|---|---|---|
-| `ProfileScreen` | Dashboard AKG + progress | Ring chart harian, target per nutrien |
-| `EditProfilScreen` | Edit data diri | Ubah kategori, usia, trimester / usia anak |
-
-### Informasi & Tips
-| Halaman | Tujuan | Fitur Utama |
-|---|---|---|
-| `InfoGiziScreen` | Detail gizi makanan | Profil nutrien, manfaat, saran porsi per kategori |
-| `RekomendasiScreen` | Saran saat gizi kurang | Gap AKG, list makanan pengganti |
+| `ScanScreen` | Deteksi makanan | Kamera / galeri → Roboflow + Gemini |
+| `HistoryScreen` | Log makanan harian | List per tanggal, total gizi, progress AKG |
+| `ProfileScreen` | Dashboard AKG + progress | Target per nutrien, info pengguna |
 | `TipsListScreen` | Tips gizi harian | Filter per kategori user |
 | `TipsDetailScreen` | Baca tips lengkap | Konten, ilustrasi, referensi |
-| `ArtikelListScreen` | Artikel kesehatan | Konten Kemenkes, search, filter |
-| `ArtikelDetailScreen` | Baca artikel penuh | Konten panjang, share, bookmark |
-
-### Sistem
-| Komponen | Tujuan | Detail |
-|---|---|---|
-| `AlertGiziSystem` | Notifikasi gizi kurang | Cek pukul 15.00, push notif jika < 50% AKG, deep link ke Rekomendasi |
-
----
-
-## Roadmap Pengembangan
-
-```
-Fase 1 (Minggu 1)     Fase 2 (Minggu 2-3)     Fase 3 (Minggu 4)
-─────────────────────   ─────────────────────   ──────────────────────
-RegisterScreen update   Rekomendasi makanan     Tips Gizi Harian
-Data AKG Kemenkes       Laporan Mingguan        Artikel Kesehatan
-ProfileScreen AKG       Info Gizi detail        Tambah Manual
-HistoryScreen log       Porsi Manual            Alert Gizi Kurang
-```
-
-### Fase 1 — Core & Profil *(estimasi: 1 minggu)*
-Fokus pada fondasi: registrasi dengan kategori, data AKG lokal, profil target, dan log histori harian. Setelah fase ini, pengguna bisa melakukan scan dan memantau progress gizi harian.
-
-### Fase 2 — Analisis & Rekomendasi *(estimasi: 2 minggu)*
-Fokus pada analisis gizi: rekomendasi makanan saat gizi kurang, laporan tren mingguan, detail info gizi, dan koreksi porsi manual.
-
-### Fase 3 — Konten & Notifikasi *(estimasi: 1 minggu)*
-Fokus pada kelengkapan konten dan pengalaman proaktif: tips & artikel edukasi, input manual, dan alert otomatis berbasis data gizi harian.
+| `ArtikelListScreen` | Artikel kesehatan | Search, filter, konten edukasi |
+| `ArtikelDetailScreen` | Baca artikel penuh | Konten panjang, bookmark |
 
 ---
 
@@ -161,88 +98,64 @@ Fokus pada kelengkapan konten dan pengalaman proaktif: tips & artikel edukasi, i
 
 ```
 nutriscan/
-├── App.js                        # Entry point + providers
+├── App.js                        # Entry point
+├── index.js                      # Expo root
 ├── app.json                      # Expo config
-├── .env                          # API keys (jangan di-commit!)
 ├── babel.config.js
+├── metro.config.js               # Metro bundler config
+├── tailwind.config.js            # NativeWind config
+├── global.css                    # Global styles
+├── eas.json                      # EAS Build config
 ├── package.json
 │
-└── src/
-    ├── navigation/
-    │   ├── AppNavigator.jsx       # Root: auth vs main
-    │   ├── AuthNavigator.jsx      # Stack: login, register
-    │   ├── MainTabNavigator.jsx   # Bottom tabs
-    │   └── ScanStackNavigator.jsx # Stack di dalam tab scan
+└── app/
+    ├── context/
+    │   └── AuthContext.js         # Firebase auth state
+    │
+    ├── data/
+    │   ├── akgData.js             # AKG Kemenkes 2019
+    │   ├── artikelData.js         # Konten artikel
+    │   ├── nutrisiDatabase.js     # Database nutrisi lokal
+    │   └── tipsData.js            # Tips per kategori
     │
     ├── screens/
     │   ├── auth/
-    │   │   ├── LoginScreen.jsx
-    │   │   └── RegisterScreen.jsx
-    │   ├── scan/
-    │   │   ├── ScanScreen.jsx
-    │   │   ├── ScanResultScreen.jsx
-    │   │   ├── PorsiManualScreen.jsx
-    │   │   └── TambahManualScreen.jsx
-    │   ├── history/
-    │   │   ├── HistoryScreen.jsx
-    │   │   ├── HistoryDetailScreen.jsx
-    │   │   └── LaporanMingguanScreen.jsx
-    │   ├── profile/
-    │   │   ├── ProfileScreen.jsx
-    │   │   └── EditProfilScreen.jsx
-    │   └── info/
-    │       ├── InfoGiziScreen.jsx
-    │       ├── RekomendasiScreen.jsx
-    │       ├── TipsListScreen.jsx
-    │       ├── TipsDetailScreen.jsx
-    │       ├── ArtikelListScreen.jsx
-    │       └── ArtikelDetailScreen.jsx
+    │   │   ├── LoginScreen.js
+    │   │   ├── RegisterScreen.js
+    │   │   ├── ForgotPasswordScreen.js
+    │   │   ├── components/
+    │   │   │   ├── Step1Form.js
+    │   │   │   └── Step2Form.js
+    │   │   └── hooks/
+    │   │       └── useRegister.js
+    │   │
+    │   ├── user/
+    │   │   ├── ScanScreen.js
+    │   │   ├── HistoryScreen.js
+    │   │   ├── ProfileScreen.js
+    │   │   ├── TipsListScreen.js
+    │   │   ├── TipsDetailScreen.js
+    │   │   ├── ArtikelListScreen.js
+    │   │   ├── ArtikelDetailScreen.js
+    │   │   └── hooks/
+    │   │       ├── useArtikel.js
+    │   │       ├── useHistory.js
+    │   │       ├── useProfile.js
+    │   │       ├── useTips.js
+    │   │       └── useUserProfil.js
+    │   │
+    │   └── admin/                 # Admin panel (coming soon)
     │
-    ├── components/
-    │   ├── common/
-    │   │   ├── Button.jsx
-    │   │   ├── Card.jsx
-    │   │   ├── LoadingOverlay.jsx
-    │   │   └── NutriProgressBar.jsx
-    │   ├── scan/
-    │   │   ├── FoodCard.jsx
-    │   │   └── NutriTable.jsx
-    │   ├── history/
-    │   │   ├── DayRow.jsx
-    │   │   └── WeeklyChart.jsx
-    │   └── profile/
-    │       ├── AkgRingChart.jsx
-    │       └── CategoryBadge.jsx
+    ├── theme/
+    │   └── colors.js              # Theme colors
     │
-    ├── hooks/
-    │   ├── useAuth.js             # Firebase auth state
-    │   ├── useHistory.js          # Baca/tulis AsyncStorage
-    │   ├── useAkg.js              # Hitung target AKG
-    │   ├── useRoboflow.js         # Panggil Roboflow API
-    │   └── useNotification.js     # Expo Notifications
-    │
-    ├── services/
-    │   ├── firebaseConfig.js      # Init Firebase
-    │   ├── authService.js         # Login, register, logout
-    │   ├── roboflowService.js     # Upload foto → deteksi
-    │   ├── storageService.js      # CRUD AsyncStorage
-    │   └── notificationService.js # Schedule alert gizi
-    │
-    ├── data/
-    │   ├── tkpi.json              # Database TKPI lokal
-    │   ├── akg.json               # AKG Kemenkes 2019
-    │   ├── tips.json              # Tips per kategori
-    │   └── artikel.json           # Konten Kemenkes
-    │
-    ├── utils/
-    │   ├── akgCalculator.js       # Hitung % AKG harian
-    │   ├── nutritionMapper.js     # Roboflow → TKPI lookup
-    │   ├── dateHelper.js          # Format tanggal
-    │   └── constants.js           # Warna, key storage, dll
-    │
-    └── context/
-        ├── AuthContext.js
-        └── UserProfileContext.js  # Kategori + target AKG
+    └── utils/
+        ├── firebaseConfig.js      # Firebase init
+        ├── geminiConfig.js        # Gemini AI config
+        ├── geminiHelper.js        # Gemini helper utilities
+        ├── roboflowConfig.js      # Roboflow API config
+        ├── artikelConfig.js       # Artikel config
+        └── foodIcon.js            # Food icon mapping
 ```
 
 ---
@@ -254,6 +167,7 @@ nutriscan/
 - Expo CLI: `npm install -g expo-cli`
 - Akun Firebase (untuk Auth)
 - API Key Roboflow (untuk deteksi makanan)
+- API Key Google Gemini (untuk analisis gizi)
 
 ### Langkah Instalasi
 
@@ -285,8 +199,11 @@ Buat file `.env` di root proyek:
 EXPO_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key
 EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
 EXPO_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET=your_project.firebasestorage.app
+EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+EXPO_PUBLIC_FIREBASE_APP_ID=your_app_id
+EXPO_PUBLIC_GEMINI_API_KEY=your_gemini_api_key
 EXPO_PUBLIC_ROBOFLOW_API_KEY=your_roboflow_api_key
-EXPO_PUBLIC_ROBOFLOW_MODEL_URL=https://detect.roboflow.com/your-model/version
 ```
 
 > ⚠️ Jangan pernah commit file `.env` ke repositori. Pastikan `.env` sudah masuk ke `.gitignore`.
@@ -299,7 +216,7 @@ EXPO_PUBLIC_ROBOFLOW_MODEL_URL=https://detect.roboflow.com/your-model/version
 2. Buat branch fitur: `git checkout -b fitur/nama-fitur`
 3. Commit perubahan: `git commit -m "feat: deskripsi singkat"`
 4. Push ke branch: `git push origin fitur/nama-fitur`
-5. Buat Pull Request ke branch `develop`
+5. Buat Pull Request ke branch `main`
 
 ### Konvensi Commit
 
@@ -319,6 +236,7 @@ EXPO_PUBLIC_ROBOFLOW_MODEL_URL=https://detect.roboflow.com/your-model/version
 - [Tabel Komposisi Pangan Indonesia (TKPI)](http://www.panganku.org)
 - [Angka Kecukupan Gizi 2019 — Kemenkes RI](https://www.kemkes.go.id)
 - [Roboflow Documentation](https://docs.roboflow.com)
+- [Google Gemini API](https://ai.google.dev)
 - [Expo Documentation](https://docs.expo.dev)
 - [Firebase Auth — React Native](https://rnfirebase.io/auth/usage)
 
