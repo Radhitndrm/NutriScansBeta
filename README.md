@@ -41,7 +41,7 @@ NutriScan membantu ibu hamil dan orang tua balita memantau kecukupan gizi harian
 | AI Deteksi Makanan | Roboflow API + Google Gemini API |
 | Database Gizi | Data nutrisi lokal (JSON) |
 | Autentikasi | Firebase Authentication (email + password) |
-| Penyimpanan Lokal | AsyncStorage |
+| Penyimpanan Lokal | Firebase FireStore |
 | Styling | NativeWind (Tailwind CSS) |
 | Navigasi | Expo Router (file-based routing) |
 
